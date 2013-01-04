@@ -1,16 +1,33 @@
 {
-  "name": "T411-Improver",
-  "version": "13.1.4",
-  "manifest_version": 2,
-  "description": "Extension pour t411.me qui améliore certains aspects du site.",
-  "icons": { 
-  		"16": "logo16.png",
+	"name": "T411-Improver",
+	"version": "13.1.4",
+	"manifest_version": 2,
+	"description": "Extension pour t411.me qui améliore certains aspects du site.",
+	"icons": { 
+		"16": "logo16.png",
 		"48": "logo48.png",
 		"128": "logo128.png" },
-  "content_scripts": [ 
-       { 
-           "matches": ["http://www.t411.me/torrents/upload-step-2/?category=433*"], 
-           "js": [ "video-upload.js"] 
-       } 
-     ] 
+
+
+
+	"content_scripts": [ 
+		{ 
+			"matches": ["http://www.t411.me/torrents/upload-step-2/?category=433*"], 
+			"js": ["mediainfo.js", "video-upload.js"] 
+		}, { 
+			"matches": ["http://www.t411.me/torrents/upload-step-2/?category=631*"], 
+			"js": [ "video-upload.js"] 
+       }],
+	"web_accessible_resources": [
+	
+  ],
+
+
+
+	"permissions": [
+		"http://www.t411.me/torrents/upload-step-2/*"
+	],
+	"web_accessible_resources": [
+		"mediainfo-langs.csv"
+	]
 }

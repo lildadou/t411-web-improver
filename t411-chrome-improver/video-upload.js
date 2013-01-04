@@ -1,7 +1,8 @@
 // Author: Daniel L. (aka lildadou)
 (function() {
-var nfoInput = document.getElementsByName("nfo")[0];
-
+/*Retourne un tableau contenant l'ensemble des objets JSON
+ * pour une section donnée
+ */
 var getNamedSections = function(nfoJson, sectionName) {
   var result=[];
   for (var i=0; i<nfoJson.length; i++) if (nfoJson[i].sectionName==sectionName) result.push(nfoJson[i]);
@@ -14,20 +15,50 @@ var getNamedSections = function(nfoJson, sectionName) {
 */
 var nfo2json = function(nfoText) {
   var lines = nfoText.split('\n');
-  var sectionRegex = /^\w+$/;
-  var entrieRegex =  /^(\w+([\s\(\)\/\*]{1,2}\w+)*[\(\)\/\*]?)\s*: (.+)$/;
+  var sectionRegex = /^[^\s]+$/;
+  var entrieRegex =  /^([^\s]+(\s[^\s]+)*)\s+: (.+)$/;
+
+  // On determine la langue
+  var langCount = {};
+  for (var i=0; i<lines.length; i++) {
+    var l = lines[i];
+    var sectionName = sectionRegex.exec(l);
+    var entrie = entrieRegex.exec(l);
+    if (sectionName != null) {
+      var detectLang = mediainfo.getLangBySample(sectionName[0]);
+      if (detectLang)
+    	  if (typeof(langCount[detectLang])=="undefined") langCount[detectLang]=1;
+    	  else langCount[detectLang]++;
+    } else if (entrie != null) {
+	  var detectLang = mediainfo.getLangBySample(entrie[1]);
+	  if (detectLang)
+		if (typeof(langCount[detectLang])=="undefined") langCount[detectLang]=1;
+	  	else langCount[detectLang]++;
+    }
+  }
+  var detectedLang = "Language_ISO639";
+  var detectedLangScore = 0;
+  for (var langId in langCount) if (langCount[langId] > detectedLangScore) {
+	  detectedLangScore = langCount[langId];
+	  detectedLang = langId;
+  }
+  
   var result = []; var currentSection={};
   for (var i=0; i<lines.length; i++) {
     var l = lines[i];
     var sectionName = sectionRegex.exec(l);
     var entrie = entrieRegex.exec(l);
     if (sectionName != null) { // Nouvelle section
+      var translatedSectionName = mediainfo.getLangKey(detectedLang, sectionName[0]);
+      //console.log("-> Nouvelle section:", translatedSectionName);
       currentSection = {};
-      currentSection.sectionName = sectionName[0];
+      currentSection.sectionName = translatedSectionName;
       result.push(currentSection);
     } else if (entrie != null) { // Nouvelle entrée
-      currentSection[entrie[1]] = entrie[3];
-    }
+      var entrieName = mediainfo.getLangKey(detectedLang, entrie[1]);
+      //console.log(entrieName);
+      currentSection[entrieName] = entrie[3];
+    } //else console.warn("Unreconized: ", l);
   }
   
   // Conversion des numéraires
@@ -35,8 +66,8 @@ var nfo2json = function(nfoText) {
   for (var i=0; i<s.length; i++) {
     s[i]["Width"] = Number(/(\d+(\s\d+)*)/.exec(s[i]["Height"])[1].replace(" ",""));
     s[i]["Height"] = Number(/(\d+(\s\d+)*)/.exec(s[i]["Height"])[1].replace(" ",""));
-    s[i]["Frame rate"] = Number(/(\d+(\.\d+)*)/.exec(s[i]["Frame rate"])[1]);
-    s[i]["Bits/(Pixel*Frame)"] = Number(/(\d+(\.\d+)*)/.exec(s[i]["Bits/(Pixel*Frame)"])[1]);
+    s[i]["FrameRate"] = Number(/(\d+(\.\d+)*)/.exec(s[i]["FrameRate"])[1]);
+    s[i]["Bits-(Pixel*Frame)"] = Number(/(\d+(\.\d+)*)/.exec(s[i]["Bits-(Pixel*Frame)"])[1]);
   }
   
   return result;
@@ -54,7 +85,7 @@ var nfoJsonDecoder = function(nfoJson) {
   var v = getFirstNamedSection(nfoJson, "Video");
   //var a = getFirstNamedSection(nfoJson, "Audio");
   //var s = getFirstNamedSection(nfoJson, "Text");
-  var fName = /^(\.\/)?(.*)$/.exec(g["Complete name"])[2];
+  var fName = /^(\.\/)?(.*)$/.exec(g["CompleteName"])[2];
   result.name=fName;
   
   // serie ou film?
@@ -69,7 +100,7 @@ var nfoJsonDecoder = function(nfoJson) {
   }
   
   // PAL/NTSC
-  result.isPAL = ((v["Frame rate"]==25) || (v["Frame rate"]==50));
+  result.isPAL = ((v["FrameRate"]==25) || (v["FrameRate"]==50));
 
   // Langue
   result.lang = 
@@ -83,7 +114,7 @@ var nfoJsonDecoder = function(nfoJson) {
   result.quality = null;
   var isHDFormat = (v["Height"] > 680);
   if (isHDFormat) {
-    var bpf = v["Bits/(Pixel*Frame)"];
+    var bpf = v["Bits-(Pixel*Frame)"];
     result.quality = (bpf>0.26)?((v["Height"] > 1020)?"HDrip 1080":"HDrip 720"):"Mkv h.264";
   }
   
@@ -94,7 +125,12 @@ var nfoJsonDecoder = function(nfoJson) {
   return result;
 };
 
+/**Méthode qui applique les données du NFO au formulaire
+ * d'upload.
+ */
 var applyOnUploadPage = function(nfo) {
+  // Petite fonction qui permet de récupérer un choix de catégorie
+  // par son texte plutôt que par un identifiant
   var getOptByText = function(selectElem, val) {
     var opts = selectElem.options;
     for (var i=0; i<opts.length; i++) {
@@ -128,14 +164,19 @@ var applyOnUploadPage = function(nfo) {
   getOptByText(document.getElementsByName("term[9][]")[0], "2D").selected = true;
 };
 
+/* On ajoute le listener. C'est ici le point de départ
+ * du comportement du script
+ */
+var nfoInput = document.getElementsByName("nfo")[0];
 nfoInput.onchange = function(e) {
   var nfoFile = nfoInput.files[0];
   var reader = new FileReader();
   reader.onload = function(e) {
-    window.nfoJson = nfo2json(reader.result);
-    window.nfo = nfoJsonDecoder(window.nfoJson);
+    var nfoJson = nfo2json(reader.result);
+    var nfo = nfoJsonDecoder(nfoJson);
     applyOnUploadPage(nfo);
   };
   reader.readAsText(nfoFile);
 };
+
 })();
