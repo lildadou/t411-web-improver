@@ -1,6 +1,6 @@
 {
 	"name": "T411-Improver",
-	"version": "13.1.5.1",
+	"version": "13.1.6",
 	"manifest_version": 2,
 	"description": "Extension pour t411.me qui améliore certains aspects du site.",
 	"icons": { 
@@ -18,14 +18,10 @@
 			"matches": ["http://www.t411.me/torrents/upload-step-2/?category=631*"], 
 			"js": ["mediainfo.js", "video-upload.js"] 
        }],
-	"web_accessible_resources": [
-	
-  ],
-
-
 
 	"permissions": [
-		"http://www.t411.me/torrents/upload-step-2/*"
+		"http://www.t411.me/torrents/upload-step-2/*",
+		"http://www.t411.me/torrents/search/"
 	],
 	"web_accessible_resources": [
 		"mediainfo-langs.csv"
