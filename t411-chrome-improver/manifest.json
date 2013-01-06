@@ -17,6 +17,9 @@
 		}, { 
 			"matches": ["http://www.t411.me/torrents/upload-step-2/?category=631*"], 
 			"js": ["mediainfo.js", "video-upload.js"] 
+       }, { 
+			"matches": ["http://www.t411.me/torrents/search/*"], 
+			"js": ["fast-dl.js", "mass-signal.js"] 
        }],
 
 	"permissions": [
@@ -24,6 +27,7 @@
 		"http://www.t411.me/torrents/search/"
 	],
 	"web_accessible_resources": [
-		"mediainfo-langs.csv"
+		"mediainfo-langs.csv",
+		"Download-64.png"
 	]
 }
