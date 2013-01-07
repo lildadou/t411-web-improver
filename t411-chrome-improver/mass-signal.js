@@ -1,31 +1,40 @@
 (function() {
+var ajax = function(url, params, onDone, onFail) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+
+	//JQuery simulation
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+	xhr.setRequestHeader("Accept", "application/json, text/javascript, */*; q=0.01");
+
+	xhr.onreadystatechange = function() {//Call a function when the state changes.
+		if(xhr.readyState == 4)
+			if (xhr.status == 200) onDone();
+			else onFail();
+	};
+	xhr.send(params);
+};
+	
 // Fonction de signalement de un torrent
 var sendSignal = function(tId, signalMsg) {
-	$.ajax({
-		type: "POST",
-		url: "/torrents/report/?id="+tId,
-		data: { type:1, reason: signalMsg }
-	}).done((function(i){ return function() {console.log(i," signalé")} })(tId))
-	.fail((function(i){ return function() {console.error(i,"PAS signalé")} })(tId));
+	ajax("/torrents/report/?id="+tId, "type=1&reason="+signalMsg,
+			(function(i){ return function() {console.log(i," signalé")} })(tId)),
+			(function(i){ return function() {console.error(i,"PAS signalé")} })(tId);
 };
 
 // Fonction de signalement de un torrent par commentaire
 var sendCommentaire = function(tId, signalMsg) {
-	$.ajax({
-		type: "POST",
-			url: "/torrents/comments/",
-			data: { id:tId, comment: signalMsg }
-		}).done((function(i){ return function() {console.log(i," msg posté")} })(tId))
-		.fail((function(i){ return function() {console.error(i," msg PAS posté")} })(tId));
+	ajax("/torrents/comments/", "id="+tId+"&comment="+signalMsg,
+			(function(i){ return function() {console.log(i," cmt posté")} })(tId)),
+			(function(i){ return function() {console.error(i," cmt PAS posté")} })(tId);
 };
 
 // Fonction de signalement de un torrent par commentaire
 var vote = function(tId, vote) {
-	$.ajax({
-		type: "POST",
-		url: "/torrents/vote/?vote="+vote+"&id="+tId
-		}).done((function(i){ return function() {console.log(i," vote prez")} })(tId))
-		.fail((function(i){ return function() {console.error(i," PAS vote prez")} })(tId));
+	ajax("/torrents/vote/?vote="+vote+"&id="+tId, "",
+			(function(i){ return function() {console.log(i," vote prez")} })(tId)),
+			(function(i){ return function() {console.error(i," PAS vote prez")} })(tId);
 };
 
 
