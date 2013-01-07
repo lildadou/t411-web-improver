@@ -31,3 +31,13 @@ for (var i=0; i < profilLinks.length; i++) {
 	profImg.style["background-color"]="transparent";
 }
 
+
+/**Parcours les avatars pour leur mettre de la transparence
+ */
+var profilImgs = document.querySelectorAll('img.ProfilePhotoMedium');
+for (var i=0; i < profilImgs.length; i++) {
+	var imgProfil = profilImgs[i];
+	imgProfil.style["background-color"]="transparent";
+}
+
+
