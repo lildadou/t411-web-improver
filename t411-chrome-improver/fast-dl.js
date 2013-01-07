@@ -12,6 +12,7 @@ for (var i=0; i<allTorrents.length; i++) {
 	var tId = /\d+$/.exec(nfoLink.href)[0];
 	var dlLink = document.createElement("a");
 	dlLink.href = "http://www.t411.me/torrents/download/?id="+tId;
+	dlLink.setAttribute("alt","Lien de téléchargement direct");
 	var dlImg = new Image();
 	dlImg.src = chrome.extension.getURL("Download-64.png");
 	dlImg.width="16";
