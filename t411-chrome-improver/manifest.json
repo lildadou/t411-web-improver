@@ -20,6 +20,10 @@
        }, { 
 			"matches": ["http://www.t411.me/torrents/search/*"], 
 			"js": ["fast-dl.js", "mass-signal.js"] 
+       }, { 
+			"matches": ["http://forum.t411.me/*"], 
+			"all_frames": true, 
+			"js": ["profile-forum.js"] 
        }],
 
 	"permissions": [
@@ -28,6 +32,7 @@
 	],
 	"web_accessible_resources": [
 		"mediainfo-langs.csv",
-		"Download-64.png"
+		"Download-64.png",
+		"Contact-32.png"
 	]
 }
