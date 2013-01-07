@@ -2,6 +2,7 @@
 
 // Ajout checkbox individuelle
 var allTorrents= document.querySelectorAll("table.results>tbody>tr");
+var dwnIco = chrome.extension.getURL("Download-64.png");
 for (var i=0; i<allTorrents.length; i++) {
 	var nfoImg = new Image();
 	nfoImg.src = "http://www.t411.me/images/icon_nfo.gif";
@@ -14,7 +15,7 @@ for (var i=0; i<allTorrents.length; i++) {
 	dlLink.href = "http://www.t411.me/torrents/download/?id="+tId;
 	dlLink.setAttribute("alt","Lien de téléchargement direct");
 	var dlImg = new Image();
-	dlImg.src = chrome.extension.getURL("Download-64.png");
+	dlImg.src = dwnIco;
 	dlImg.width="16";
 	dlLink.appendChild(dlImg);
 	nfoLink.parentElement.appendChild(dlLink);
