@@ -112,7 +112,7 @@ sendButton.onclick = function() {
 	for (var i=0; i<allTorrents.length; i++) {
 		var row = allTorrents[i];
 		if (row.querySelector("input").checked) {
-			var tId = /\d+$/.exec(row.querySelector("a.nfo").href)[0];
+			var tId = /\d+$/.exec(row.querySelector("a.ajax").href)[0];
 			if (signalMessageCheck.checked) sendSignal(tId, signalMsg);
 			if (commentMessageCheck.checked) sendCommentaire(tId, commentMsg);
 			if (voteCheck.checked) vote(tId, "prez");
