@@ -22,6 +22,7 @@ for (var i=0; i < profilLinks.length; i++) {
 	t411Href.appendChild(profImg);
 	
 	
+	capsule.style.display = "inline";
 	t411Href.href="http://www.t411.me/users/profile/"+extractedNickname;
 	profImg.src = profileIcoUrl;
 	// Pour éviter l'effet '2nd avatar'
