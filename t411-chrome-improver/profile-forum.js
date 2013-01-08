@@ -2,7 +2,7 @@
 /**Parcours les liens vers des profil "forum" pour ajouter une icone
  * linké vers le profil t411
  */
-var profilLinks = document.querySelectorAll('a[href^="/profile"]:not(.ProfileLink)'); //selection des liens profile
+var profilLinks = document.querySelectorAll('a[href^="/profile"]:not(.ProfileLink):not(.Photo)'); //selection des liens profile
 var profileIcoUrl = chrome.extension.getURL("Contact-32.png"); // URL de l'image du lien
 var profileUrlFilter = /\/profile\/\d+\/([^\/]+)$/; // RegEx pour filtrer les URL de profile
 for (var i=0; i < profilLinks.length; i++) {
