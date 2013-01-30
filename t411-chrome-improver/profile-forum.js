@@ -2,9 +2,9 @@
 /**Parcours les liens vers des profil "forum" pour ajouter une icone
  * linké vers le profil t411
  */
-var profilLinks = document.querySelectorAll('a[href^="/profile"]:not(.ProfileLink):not(.Photo)'); //selection des liens profile
+var profilLinks = document.querySelectorAll('a[href^="http://www.t411.me/users/profile"]:not(.ProfileLink):not(.Photo)'); //selection des liens profile
 var profileIcoUrl = chrome.extension.getURL("Contact-32.png"); // URL de l'image du lien
-var profileUrlFilter = /\/profile\/\d+\/([^\/]+)$/; // RegEx pour filtrer les URL de profile
+var profileUrlFilter = /\/profile\/([^\/]+)$/; // RegEx pour filtrer les URL de profile
 for (var i=0; i < profilLinks.length; i++) {
 	var fofoProfil = profilLinks[i];
 	var extractedNickname = profileUrlFilter.exec(fofoProfil.href);
@@ -23,7 +23,7 @@ for (var i=0; i < profilLinks.length; i++) {
 	
 	
 	capsule.style.display = "inline";
-	t411Href.href="http://www.t411.me/users/profile/"+extractedNickname;
+	t411Href.href="http://forum.t411.me/profile/"+extractedNickname;
 	profImg.src = profileIcoUrl;
 	// Pour éviter l'effet '2nd avatar'
 	profImg.style.height="16px";
