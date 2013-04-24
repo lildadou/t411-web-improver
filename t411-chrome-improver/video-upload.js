@@ -118,7 +118,7 @@ var nfoJsonDecoder = function(nfoJson) {
     result.quality = (bpf>0.26)?((v["Height"] > 1020)?"HDrip 1080":"HDrip 720"):"Mkv h.264";
   }
   
-  if (/[. -](WEB|WEB-DL|WEBDL|WEBRIP|WEB-RIP)[. -]/i.exec(fName)) result.quality = "WEBrip";
+  if (/[. -](WEB|WEBRIP|WEB-RIP)[. -]/i.exec(fName)) result.quality = "WEBrip";
   if (/[. -]HDTV[. -]/i.exec(fName)) result.quality = isHDFormat?"HDTV":"TVrip";
   if (/[. -]dvdrip[. -]/i.exec(fName)) result.quality = "DVDrip";
   
