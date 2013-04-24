@@ -72,11 +72,25 @@
 		iconeImage.style["background-color"]="transparent";
 	}
 
+	
+	
+	
 	/**Parcours les avatars pour leur mettre de la transparence
 	 */
 	var profilImgs = document.querySelectorAll('img.ProfilePhotoMedium');
 	for (var i=0; i < profilImgs.length; i++) {
 		var imgProfil = profilImgs[i];
 		imgProfil.style["background-color"]="transparent";
-	}	
+	}
+	
+	
+	/** Parcours des liens dans les messages du forum
+	 * pour les rendre visible.
+	 */
+	var bblinks = document.querySelectorAll('a.bbcode_url');
+	for (var i=0; i<bblinks.length; i++) {
+	var aBBLink=bblinks[i];
+	aBBLink.style.textDecoration="underline";
+	aBBLink.style.color="blue";
+	}
 })();
