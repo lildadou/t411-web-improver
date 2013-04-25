@@ -64,12 +64,13 @@ var nfo2json = function(nfoText) {
   // Conversion des numéraires
   var s = getNamedSections(result, "Video");
   for (var i=0; i<s.length; i++) {
-    s[i]["Width"] = Number(/(\d+(\s\d+)*)/.exec(s[i]["Height"])[1].replace(" ",""));
+    s[i]["Width"] = Number(/(\d+(\s\d+)*)/.exec(s[i]["Width"])[1].replace(" ",""));
     s[i]["Height"] = Number(/(\d+(\s\d+)*)/.exec(s[i]["Height"])[1].replace(" ",""));
     s[i]["FrameRate"] = Number(/(\d+(\.\d+)*)/.exec(s[i]["FrameRate"])[1]);
     s[i]["Bits-(Pixel*Frame)"] = Number(/(\d+(\.\d+)*)/.exec(s[i]["Bits-(Pixel*Frame)"])[1]);
   }
   
+  console.log("Resultat du parsage du NFO:", result);
   return result;
 };
 
@@ -113,12 +114,13 @@ var nfoJsonDecoder = function(nfoJson) {
   // qualité
   result.quality = null;
   var isHDFormat = (v["Height"] > 680);
+  console.log("isHD?", isHDFormat);
   if (isHDFormat) {
-    var bpf = v["Bits-(Pixel*Frame)"];
-    result.quality = (bpf>0.26)?((v["Height"] > 1020)?"HDrip 1080":"HDrip 720"):"Mkv h.264";
+    result.quality = (v["Height"] > 1020)?"HDrip 1080":"HDrip 720";
+    console.log(result.quality);
   }
   
-  if (/[. -](WEB|WEBRIP|WEB-RIP)[. -]/i.exec(fName)) result.quality = "WEBrip";
+  if (/[. -](WEBRIP|WEB-RIP)[. -]/i.exec(fName)) result.quality = "WEBrip";
   if (/[. -]HDTV[. -]/i.exec(fName)) result.quality = isHDFormat?"HDTV":"TVrip";
   if (/[. -]dvdrip[. -]/i.exec(fName)) result.quality = "DVDrip";
   
