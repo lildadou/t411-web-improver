@@ -1,6 +1,6 @@
 {
 	"name": "T411-Improver",
-	"version": "13.4.24.1",
+	"version": "13.4.25",
 	"manifest_version": 2,
 	"description": "Extension pour t411.me qui améliore certains aspects du site.",
 	"icons": { 
@@ -12,20 +12,30 @@
 
 	"content_scripts": [ 
 		{ 
-			"matches": ["http://www.t411.me/torrents/upload-step-2/?category=433*"], 
+			"matches": [
+				"http://www.t411.me/torrents/upload-step-2/?category=433*",
+				"https://www.t411.me/torrents/upload-step-2/?category=433*"], 
 			"js": ["mediainfo.js", "video-upload.js"] 
 		}, { 
-			"matches": ["http://www.t411.me/torrents/upload-step-2/?category=631*"], 
+			"matches": [
+				"http://www.t411.me/torrents/upload-step-2/?category=631*",
+				"https://www.t411.me/torrents/upload-step-2/?category=631*"], 
 			"js": ["mediainfo.js", "video-upload.js"] 
        }, { 
-			"matches": ["http://forum.t411.me/*"], 
+			"matches": [
+				"http://forum.t411.me/*",
+				"https://forum.t411.me/*"], 
 			"all_frames": true, 
 			"js": ["forum.js"] 
        }/*, { 
-			"matches": ["http://www.t411.me/torrents/search/*"], 
+			"matches": [
+				"http://www.t411.me/torrents/search/*",
+				"https://www.t411.me/torrents/search/*"], 
 			"js": ["fast-dl.js", "mass-signal.js"] 
        }, { 
-			"matches": ["http://www.t411.me/my/bookmarks/"], 
+			"matches": [
+				"http://www.t411.me/my/bookmarks/",
+				"https://www.t411.me/my/bookmarks/"], 
 			"js": ["flexget.js"] 
        }*/],
 
