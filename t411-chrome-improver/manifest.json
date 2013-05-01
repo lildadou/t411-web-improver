@@ -1,6 +1,6 @@
 {
 	"name": "T411-Improver",
-	"version": "13.4.25",
+	"version": "13.5.1",
 	"manifest_version": 2,
 	"description": "Extension pour t411.me qui améliore certains aspects du site.",
 	"icons": { 

@@ -19,33 +19,55 @@
 	var metas = document.querySelectorAll('div.Meta');
 	for (var i=0; i < metas.length; i++) {
 		var divMeta = metas[i];
+
+		var footResum = divMeta.querySelector('span.LastDiscussionTitle > a[href^="//www.t411.me/users/profile/"]');
+		if (footResum != null) {
+			var pseudo = pseudoTaker.exec(footResum.href)[1];
+			footResum.href=buildForumProfileUrl(pseudo);
+			
+			var capsule = document.createElement("span"); capsule.style.display = "inline";
+			var linkImage = document.createElement("a");
+			var iconeImage = new Image();
+			footResum.parentElement.insertBefore(capsule, footResum);
+			capsule.appendChild(footResum);
+			capsule.appendChild(linkImage);
+			linkImage.appendChild(iconeImage);
+			
+			linkImage.href = buildT411ProfileUrl(pseudo);
+			iconeImage.src = icoT411ProfileUrl;
+			iconeImage.style.height="16px";
+			iconeImage.style.width="16px";
+			iconeImage.style.float="none";
+			iconeImage.style["background-color"]="transparent";
+		}
 		
 		// On change le lien sur le pseudo pour qu'il pointe vers le profil du forum
 		// et on corrige celui de l'avatar qui ne fonctionne pas...
 		var authorSection = divMeta.querySelector('span.Author');
-		if (authorSection == null) continue;
-		var pseudoLink = authorSection.querySelector('a[href^="//www.t411.me/users/profile/"]');
-		var avatarLink = authorSection.querySelector('a.ProfileLink');
-		var pseudo = pseudoTaker.exec(pseudoLink.href)[1];
-		pseudoLink.href = buildForumProfileUrl(pseudo);
-		avatarLink.href = buildForumProfileUrl(pseudo);
-		
-		// On ajoute ensuite l'icone qui sera linké vers le profil t411
-		// <div><a href=profile_forum>pseudo</a><a href=profile_t411><img></a></div>
-		var capsule = document.createElement("span"); capsule.style.display = "inline";
-		var linkImage = document.createElement("a");
-		var iconeImage = new Image();
-		authorSection.appendChild(capsule);
-		capsule.appendChild(pseudoLink);
-		capsule.appendChild(linkImage);
-		linkImage.appendChild(iconeImage);
-		
-		linkImage.href = buildT411ProfileUrl(pseudo);
-		iconeImage.src = icoT411ProfileUrl;
-		iconeImage.style.height="16px";
-		iconeImage.style.width="16px";
-		iconeImage.style.float="none";
-		iconeImage.style["background-color"]="transparent";
+		if (authorSection != null) {
+			var pseudoLink = authorSection.querySelector('a[href^="//www.t411.me/users/profile/"]');
+			var avatarLink = authorSection.querySelector('a.ProfileLink');
+			var pseudo = pseudoTaker.exec(pseudoLink.href)[1];
+			pseudoLink.href = buildForumProfileUrl(pseudo);
+			avatarLink.href = buildForumProfileUrl(pseudo);
+			
+			// On ajoute ensuite l'icone qui sera linké vers le profil t411
+			// <div><a href=profile_forum>pseudo</a><a href=profile_t411><img></a></div>
+			var capsule = document.createElement("span"); capsule.style.display = "inline";
+			var linkImage = document.createElement("a");
+			var iconeImage = new Image();
+			authorSection.appendChild(capsule);
+			capsule.appendChild(pseudoLink);
+			capsule.appendChild(linkImage);
+			linkImage.appendChild(iconeImage);
+			
+			linkImage.href = buildT411ProfileUrl(pseudo);
+			iconeImage.src = icoT411ProfileUrl;
+			iconeImage.style.height="16px";
+			iconeImage.style.width="16px";
+			iconeImage.style.float="none";
+			iconeImage.style["background-color"]="transparent";
+		}
 	}
 
 
