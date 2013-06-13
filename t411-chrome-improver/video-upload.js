@@ -1,5 +1,82 @@
 // Author: Daniel L. (aka lildadou)
 (function() {
+// Expression regulières utilisées pour l'extraction de données depuis le nom de fichier
+extractTitle = function(uglyName) {
+	/* Retirer un chemin (GROUP-6). Match examples:
+	* C:\my\path\file.ext -> file.ext
+	* ~/my/path/file.ext -> file.ext
+	*/
+	var rFilePath = /^(.:|\.|\.\.|~)?(\\|\/)?(([^\\\/])*(\\|\/))*(.*)$/;
+	
+	/* Retirer l'extension du fichier (GROUP-1)*/
+	var rFileExt = /\.(avi|mp4|mkv|mov)$/i;
+	
+	// Filtre pour la source originale
+	var rOrgSource = /[ _\,\.\(\)\[\]\-]+(bluray|brip|brrip|bdrip|dvdrip|webdl|hdtv|bdscr|dvdscr|sdtv|web.?rip|dsr|tvrip|preair|ppvrip|hdrip|r5|tc|ts|cam|workprint)([ _\,\.\(\)\[\]\-]|$)/i;
+	
+	// Filtre pour le format de la release
+	var rFormat = /[ _\,\.\(\)\[\]\-]+(1080p|1080i|720p|720i|hr|576p|480p|368p|360p)([ _\,\.\(\)\[\]\-]|$)/i;
+	
+	// Filtre pour le codec
+	var rVideoCodec = /[ _\,\.\(\)\[\]\-]+(10.?bits?|[xh]264|xvid|divx)([ _\,\.\(\)\[\]\-]|$)/i;
+	
+	// Filtre pour le codec audio
+	var rAudiCodec = /[ _\,\.\(\)\[\]\-]+(dts|flac|ac3|aac|dd[ _\.\(\)\[\]\-]?([12357]\.[01])|mp3)([ _\.\(\)\[\]\-]?([12357]\.[01]))?([ _\,\.\(\)\[\]\-]|$)/i;
+	
+	// Filtre pour les langues
+	var rLangs = /[ _\,\.\(\)\[\]\-]+(vo(st)?|vf|vff|vfq|fr(e(nch)?)?|truefrench|multi)([ _\,\.\(\)\[\]\-]|$)/i;
+	
+	// Filtre pour l'année de réalisation
+	var rYear = /[ _\,\.\(\)\[\]\-]+(19\d{2}|20\d{2})([ _\,\.\(\)\[\]\-]|$)/i;
+	
+	// Filtre pour les séries
+	var rSeries = /S(\d+)E(\d+)/;
+	
+	// Filtre pour le reste
+	var rUnknow = /[ _\,\.\(\)\[\]\-]{2,}.*$/i;
+	
+	var result = rFilePath.exec(uglyName.trim())[6];
+	result=result.replace(rFileExt,"");
+	
+	var extractedDatas = {
+		releaseName		: result,
+		fileExtension	: rFileExt.test(result)?rFileExt.exec(result)[1]:null,
+		originalSource	: rOrgSource.test(result)?rOrgSource.exec(result)[1]:null,
+		videoFormat		: rFormat.test(result)?rFormat.exec(result)[1]:null,
+		videoCodec		: rVideoCodec.test(result)?rVideoCodec.exec(result)[1]:null,
+		audioCodec		: rAudiCodec.test(result)?rAudiCodec.exec(result)[1]:null,
+		langs			: rLangs.test(result)?rLangs.exec(result)[1]:null,
+		year			: rYear.test(result)?rYear.exec(result)[1]:null
+	};
+	
+	// Extraction id_serie
+	if (rSeries.test(result)) {
+		var mSeries = rSeries.exec(result);
+		extractedDatas.serie_season = new Number(mSeries[1]);
+		extractedDatas.serie_episode = new Number(mSeries[2]);
+	}
+	
+	// Nettoyage du releaseName
+	// Retrait des tags reconnus
+	var extractedComp = ['name','originalSource','videoFormat','videoCodec','langs','audioCodec','year'];
+	for (var i=0; i<extractedComp.length; i++) result=result.replace(extractedDatas[extractedComp[i]],"");
+	result=result.replace(rSeries,"");
+	
+	
+	// Retraits des tags inconnus
+	extractedDatas.unreconizedData = rUnknow.test(result)?rUnknow.exec(result)[0]:null;
+	result=result.replace(extractedDatas.unreconizedData,"");
+	var rSpecialChars = /[_\,\.\(\)\[\]\-]+/;
+	var rInternTrim = / {2,}/;
+	while (rSpecialChars.test(result)) result=result.replace(rSpecialChars," ");
+	while (rInternTrim.test(result)) result=result.replace(rInternTrim," ");
+	result=result.trim();
+	extractedDatas.title = result;
+	
+	return extractedDatas;
+};
+	
+	
 /**Retourne un tableau contenant l'ensemble des objets JSON
  * pour une section donnée
  * nfoJson {Array} Un tableau qui contient un NFO sérialisé au format JSON (cf. nfo2json())
@@ -117,20 +194,21 @@ var nfoJsonDecoder = function(nfoJson) {
   var result = {};
   var g = getFirstNamedSection(nfoJson, "General");
   var v = getFirstNamedSection(nfoJson, "Video");
-  //var a = getFirstNamedSection(nfoJson, "Audio");
-  //var s = getFirstNamedSection(nfoJson, "Text");
-  var fName = /^(\.\/)?(.*)$/.exec(g["CompleteName"])[2];
-  result.name=fName;
+  var exData = extractTitle(g["CompleteName"]);
+  result.extractedData = exData;
+  result.nfoJson = nfoJson;
+  //var fName = /^(\.\/)?(.*)$/.exec(g["CompleteName"])[2]; //TODO: Utiliser extractDataFromReleaseName
+  result.name=exData.releaseName;
+  
   
   // serie ou film?
-  var serieTokens = /S(\d+)E(\d+)/.exec(fName);
-  result.isSerie = (serieTokens != null);
+  result.isSerie = (exData.serie_season != null);
   result.isMovie = !result.isSerie;
   
   // saison/episode
   if (result.isSerie) {
-    result.season = serieTokens[1];
-    result.episode = serieTokens[2];
+    result.season = exData.serie_season;
+    result.episode = exData.serie_episode;
   }
   
   // PAL/NTSC
@@ -139,24 +217,23 @@ var nfoJsonDecoder = function(nfoJson) {
   // Langue. Cette information est déterminé via le nom de fichier
   // et non pas les section Audio/Text
   result.lang = 
-    (/[. -]VOSTFR[. -]/i.exec(fName))?"VOSTFR":
-    (/[. -](VFF|TrueFrench)[. -]/i.exec(fName))?"VFF":
-    (/[. -](VFQ|VF|French)[. -]/i.exec(fName))?"VFQ":
-    (/[. -]VO[. -]/i.exec(fName))?"Anglais":
-    (/[. -]multi[. -]/i.exec(fName))?"Multi":null;
+    (/VOSTFR/i.exec(exData.langs))?"VOSTFR":
+    (/(VFF|TrueFrench)/i.exec(exData.langs))?"VFF":
+    (/(VFQ|VF|French)/i.exec(exData.langs))?"VFQ":
+    (/VO/i.exec(exData.langs))?"Anglais":
+    (/multi/i.exec(exData.langs))?"Multi":null;
   
   // qualité
   result.quality = null;
   var isHDFormat = (v["Height"] > 680);
-  console.log("isHD?", isHDFormat);
   if (isHDFormat) {
     result.quality = (v["Height"] > 1020)?"HDrip 1080":"HDrip 720";
     console.log(result.quality);
   }
   
-  if (/[. -](WEBRIP|WEB-RIP)[. -]/i.exec(fName)) result.quality = "WEBrip";
-  if (/[. -]HDTV[. -]/i.exec(fName)) result.quality = isHDFormat?"HDTV":"TVrip";
-  if (/[. -]dvdrip[. -]/i.exec(fName)) result.quality = "DVDrip";
+  if (/web.?rip/i.exec(exData.originalSource)) result.quality = "WEBrip";
+  if (/HDTV/i.exec(exData.originalSource)) result.quality = isHDFormat?"HDTV":"TVrip";
+  if (/dvdrip/i.exec(exData.originalSource)) result.quality = "DVDrip";
   
   return result;
 };
@@ -188,7 +265,7 @@ var applyOnUploadPage = function(nfo) {
   }
   
   var frmtSelect = document.getElementsByName("term[8][]")[0];
-  getOptByText(frmtSelect, nfo.isPal?"PAL":"NTSC").selected = true;
+  getOptByText(frmtSelect, nfo.isPAL?/^PAL/:/^NTSC/).selected = true;
   
   var langSelect = document.getElementsByName("term[17][]")[0];
   getOptByText(langSelect, nfo.lang).selected = true;
@@ -218,7 +295,10 @@ nfoInput.onchange = function(e) {
   reader.onload = function(e) {
     var nfoJson = nfo2json(reader.result);
     var nfo = nfoJsonDecoder(nfoJson);
+    console.log(nfo);
     applyOnUploadPage(nfo);
+    
+   
   };
   reader.readAsText(nfoFile);
 };
