@@ -1,0 +1,17 @@
+[color=red][b][size=4]{{general.releaseName}}[/size][/b][/color]
+[img={{general.poster}}]
+
+[img]http://www.master-prez.com/img_cat/licokine-team/up_serie.png[/img]
+[b][u]Source[/u] : [/b] [i]{{general.originalSource}}[/i]
+[b][u]Qualité[/u] : [/b] [i]{{video.format}}[/i]
+[b][u]Codec vidéo[/u] : [/b] [i]{{video.codec}}[/i]
+[b][u]Format de fichier[/u] : [/b] [i]{{general.fileExtension}}[/i]
+[b][u]Langue[/u] : [/b] {{#with langs}}{{#if_eq tag compare="vo"}}[i]Anglais[/i] [img]http://www.master-prez.com/images/flag/Anglais.png[/img]{{/if_eq}}{{#if_eq tag compare="vostfr"}}[i]Anglais[/i] [img]http://www.master-prez.com/images/flag/Anglais.png[/img]{{/if_eq}}{{#if_eq tag compare="vosten"}}[i]Anglais[/i] [img]http://www.master-prez.com/images/flag/Anglais.png[/img]{{/if_eq}}{{#if_eq tag compare="vfq"}}[i]Quebecois[/i] [img]http://www.anneaux-elfiques.com/images/icons/flag_qc.gif[/img]{{/if_eq}}{{#if_eq tag compare="vff"}}[i]Français[/i] [img]http://www.master-prez.com/images/flag/Francais.png[/img]{{/if_eq}}
+[b][u]Sous-titres[/u] : [/b] {{#if_eq tag compare="vo"}}[i]Aucun[/i]{{/if_eq}}{{#if_eq tag compare="vostfr"}}[i]Français[/i] [img]http://www.master-prez.com/images/flag/Francais.png[/img]{{/if_eq}}{{#if_eq tag compare="vosten"}}[i]Anglais[/i] [img]http://www.master-prez.com/images/flag/Anglais.png[/img]{{/if_eq}}{{#if_eq tag compare="vfq"}}[i]Aucun[/i]{{/if_eq}}{{#if_eq tag compare="vff"}}[i]Aucun[/i]{{/if_eq}}{{/with}}
+
+[img]http://www.master-prez.com/img_cat/licokine-team/info_serie.png[/img]
+[b][u]Titre original[/u] : [/b] [i]{{general.title}}[/i]
+
+[img]http://www.master-prez.com/img_cat/licokine-team/syn_serie.png[/img]
+[i]{{general.plot}}[/i]
+[url=https://chrome.google.com/webstore/detail/t411-improver/jihhcjpkangeiahofcmimlpocimbcdgb?hl=fr][img]http://img19.imageshack.us/img19/5980/authorfooter.png[/img][/url]
