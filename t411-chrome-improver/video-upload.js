@@ -112,40 +112,37 @@ RlzData.prototype.normalize = function() {
 		if (/dd[ _\.\(\)\[\]\-]?(5.?1)/i.test(c)) this.langs[0].codec="dd51";
 		this.langs[0].codec = this.langs[0].codec.toLowerCase();
 	}
-	if (this.langs[0].lang) {
-		var l = this.langs[0].lang;
-		console.log(l);
+	if (this.langs.tag) {
+		var l = this.langs.tag;
 		if (/vo/i.test(l)) {
-			console.log(l, "match vo");
 			this.langs[0].lang	= "unknow";
 			this.langs.tag		= "vo";
 		}
 		if (/vo.?st/i.test(l)) {
-			console.log(l, "match vost");
 			this.langs[0].lang	= "unknow";
 			this.langs.push({
-				lang : "unknow",
+				lang : "fr-fr",
 				codec: "srt"
 			});
-			this.langs.tag		= "vost";
+			this.langs.tag		= "vostfr";
 		}
 		if (/vo.?st(.?fr(e?nch)?)/i.test(l)) {
-			console.log(l, "match vostfr");
 			this.langs[1].lang	= "fr-fr";
 			this.langs.tag		= "vostfr";
 		}
 		if (/vo.?st(.?eng?)/i.test(l)) {
-			console.log(l, "match vosten");
 			this.langs[1].lang	= "en-us";
 			this.langs.tag		= "vosten";
 		}
 		if (/(VFF|TrueFrench)/i.test(l)) {
-			console.log(l, "match vff");
+			console.log("VFF",l);
 			this.langs[0].lang	= "fr-fr";
 			this.langs.tag		= "vff";
 		}
-		if (/(VFQ|VF|fr(e(nch)?)?)/i.test(l) && !/vo.?st(.?fr(e?nch)?)/i.test(l)) {
-			console.log(l, "match vfq");
+		if (/(VFQ|VF|fr(e(nch)?)?)/i.test(l) 
+				&& !/vo.?st(.?fr(e?nch)?)/i.test(l)
+				&& !/(VFF|TrueFrench)/i.test(l)) {
+			console.log("VFQ",l);
 			this.langs[0].lang	= "fr-ca";
 			this.langs.tag		= "vfq";
 		}
@@ -213,7 +210,7 @@ var extractFromReleaseName = function(uglyName) {
 	extractedDatas.video.format				= rFormat.test(rlzName)?rFormat.exec(rlzName)[1]:null;
 	extractedDatas.video.codec				= rVideoCodec.test(rlzName)?rVideoCodec.exec(rlzName)[1]:null;
 	extractedDatas.langs[0].codec			= rAudioCodec.test(rlzName)?rAudioCodec.exec(rlzName)[1]:null;
-	extractedDatas.langs[0].lang			= rLangs.test(rlzName)?rLangs.exec(rlzName)[1]:null;
+	extractedDatas.langs.tag				= rLangs.test(rlzName)?rLangs.exec(rlzName)[1]:null;
 	
 	// Extraction année de réalisation du film
 	if (rYear.test(rlzName)) extractedDatas.general.year	= new Number(rYear.exec(rlzName)[1]);	
@@ -525,7 +522,7 @@ nfoInput.onchange = function(e) {
     var rlzName = getFirstNamedSection(nfoJson, "General")["CompleteName"]; // On extrait le nom de release (qui contient beaucoup d'infos)
     var rlzData = extractFromReleaseName(rlzName); // On traite le nom de release
     nfoJsonDecoder(rlzData, nfoJson);
-    var xhr = mdbproxy.imdbapi.build(
+    var xhr = mdbproxy.allocine.build(
     		rlzData, 
     		function(rlzData) {
     			console.log(rlzData);

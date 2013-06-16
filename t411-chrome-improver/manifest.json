@@ -1,6 +1,6 @@
 {
 	"name": "T411-Improver",
-	"version": "13.6.16",
+	"version": "13.6.17",
 	"manifest_version": 2,
 	"description": "Extension pour t411.me qui améliore certains aspects du site.",
 	"icons": { 
@@ -8,7 +8,10 @@
 		"48": "logo48.png",
 		"128": "logo128.png" },
 
-
+	/* L'API webRequest ne fonctionne que en background */
+	"background": {
+    	"scripts": ["background.js"]
+    },
 
 	"content_scripts": [ 
 		{ 
@@ -26,8 +29,7 @@
 			"js": [
 				"mediainfo.js",
 				"mdbproxy.js",
-				"video-upload.js"] ,
-			"sandbox": { "pages": ["handlebars.html"] }
+				"video-upload.js"]
        }, { 
 			"matches": [
 				"http://forum.t411.me/*",
@@ -51,10 +53,13 @@
        }*/],
 
 	"permissions": [
+		"webRequest",
+		"webRequestBlocking",
 		"http://www.t411.me/torrents/upload-step-2/*",
 		"http://www.t411.me/torrents/search/",
-		"http://imdbapi.org/",
-		"http://mymovieapi.com/"
+		"http://imdbapi.org/*",
+		"http://mymovieapi.com/*",
+		"http://api.allocine.fr/rest/v3/*"
 	],
 	"web_accessible_resources": [
 		"mediainfo-langs.csv",
