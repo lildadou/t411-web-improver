@@ -2,28 +2,7 @@
 (function() {
 
 // #region Déclaration de sous-fonctions
-/**Retourne un tableau contenant l'ensemble des objets JSON
- * pour une section donnée
- * nfoJson {Array} Un tableau qui contient un NFO sérialisé au format JSON (cf. nfo2json())
- * sectionName {String} Le nom de la section voulu dans la langue Language_ISO639 (ex: Audio, General, Video)
- */
-var getNamedSections = function(nfoJson, sectionName) {
-  var result=[];
-  for (var i=0; i<nfoJson.length; i++) if (nfoJson[i].sectionName==sectionName) result.push(nfoJson[i]);
-  return result;
-};
-
-/**Cette méthode renvoie l'objet de section d'un NFO parsé. La méthode est 
- * appelé "First" car il peut exister plusieurs sections avec le même nom
- * (ex: plusieurs section Audio dans le cas d'un Multi-langue)
- * nfoJson {Array} NFO parsé
- * sectionName {String} Le nom de la section désirée
- */
-var getFirstNamedSection = function(nfoJson, sectionName) {
-  for (var i=0; i<nfoJson.length; i++) if (nfoJson[i].sectionName==sectionName) return nfoJson[i];
-  return null;
-};
-
+	
 /**Classe qui modèlise les données extraites d'un nom de release
  * @attribute {Object} extractedDatas.general
  * @attribute {String} extractedDatas.general.releaseName Le nom de release (différent du nom de fichier)
@@ -47,6 +26,7 @@ var getFirstNamedSection = function(nfoJson, sectionName) {
  * 
  * @attribute {String} [extractedDatas.simplifiedLang] Langues du média en codification VOSTFR, VFF etc
  * @constructor
+ * @base RlzData
  */
 var RlzData = function(){
 	this.general	= {
@@ -153,17 +133,19 @@ RlzData.prototype.normalize = function() {
 };
 // #endregion
 
-
-	
+// #region Déclaration des mergeurs de données externes
 /**Fonction qui extrait des informations depuis un nom de release
  * formaté de manière usuel. Cette fonction accepte aussi:
  *  - un nom de fichier (ex: Title.2002.VOSTFR.mkv)
  *  - un chemin de fichier Windows (ex: D:\Mondossier\Title.2002.VOSTFR.mkv)
  *  - un chemin de fichier Unix (ex: ~/Vidéos/Title.2002.VOSTFR.mkv)
+ * @param {RlzData} rlzData 
  * @param {String} uglyName Nom de release (Ex: Hypothermia.2010.FRENCH.720p.BluRay.AC3-ARTEFAC)
  * @returns {RlzData} extractedDatas Les données extraites
  */
-var extractFromReleaseName = function(uglyName) {
+var mergeDataIntoReleaseName = function(rlzData, uglyName) {
+	var extractedDatas = rlzData;
+	
 	// Ensemble des tags relevés lors de l'analyse
 	var tags = [];
 	
@@ -200,7 +182,6 @@ var extractFromReleaseName = function(uglyName) {
 	// Filtre pour le reste
 	var rUnknow = /[ _\,\.\(\)\[\]\-]{2,}.*$/i;
 	
-	var extractedDatas = new RlzData();
 	var rlzName = rFilePath.exec(uglyName.trim())[6];
 	extractedDatas.general.fileExtension	= rFileExt.test(rlzName)?rFileExt.exec(rlzName)[1]:null;
 	rlzName=rlzName.replace(rFileExt,"");
@@ -250,102 +231,13 @@ var extractFromReleaseName = function(uglyName) {
 	return extractedDatas.normalize();
 };
 
-
-/** Convertie le contenu d'un fichier NFO (une String) en tableau. 
- * sous forme JSON.
- * IMPORTANT: Seul les NFO produit par mediainfo sont acceptés
- * @param {String} nfoText Le contenu du fichier NFO au format mediainfo
- * @returns {Array} Chaque case du tableau contient une section (General, Video, Text, ...)
-*/
-var nfo2json = function(nfoText) {
-  var lines = nfoText.split('\n'); //On découpe en ligne par ligne
-  var sectionRegex = /^[^\s]+$/; //RegExp qui match un début de section (General, Video)
-  var entrieRegex =  /^([^\s]+(\s[^\s]+)*)\s+: (.+)$/; //RegExp qui match une entré (Width:  220px)
-
-  /* On determine la langue. Pour ce faire, pour chaque langue on va compter 
-   * le nombre d'occurence. La langue qui détient le plus d'occurence remporte le test
-   */
-  var langCount = {};
-  for (var i=0; i<lines.length; i++) {
-    var l = lines[i];
-    var sectionName = sectionRegex.exec(l);
-    var entrie = entrieRegex.exec(l);
-    if (sectionName != null) {
-      var detectLang = mediainfo.getLangBySample(sectionName[0]);
-      if (detectLang)
-    	  if (typeof(langCount[detectLang])=="undefined") langCount[detectLang]=1;
-    	  else langCount[detectLang]++;
-    } else if (entrie != null) {
-	  var detectLang = mediainfo.getLangBySample(entrie[1]);
-	  if (detectLang)
-		if (typeof(langCount[detectLang])=="undefined") langCount[detectLang]=1;
-	  	else langCount[detectLang]++;
-    }
-  }
-  var detectedLang = "Language_ISO639";
-  var detectedLangScore = 0;
-  for (var langId in langCount) if (langCount[langId] > detectedLangScore) {
-	  detectedLangScore = langCount[langId];
-	  detectedLang = langId;
-  }
-  // --- FIN de détection de la langue ---
-  
-  /* On va maintenant iterer ligne par ligne le nfo.
-   * A chaque fois qu'une nouvelle section commence, on ajoute une entrée
-   * dans le tableau de résultat. Toutes les lignes d'informations rencontrées
-   * seront dans cette case du tableau ; jusque la section suivante.
-   * 
-   * On en profite pour convertir les noms des entrées/sections dans un langage
-   * pivot (Language_ISO639). En effet, on trouve des NFO en français et en 
-   * anglais.
-   */
-  var result = []; var currentSection={};
-  for (var i=0; i<lines.length; i++) {
-    var l = lines[i];
-    var sectionName = sectionRegex.exec(l);
-    var entrie = entrieRegex.exec(l);
-    
-    
-    if (sectionName != null) { // Cas d'une nouvelle section
-      var translatedSectionName = mediainfo.getLangKey(detectedLang, sectionName[0]);
-      currentSection = {};
-      currentSection.sectionName = translatedSectionName;
-      result.push(currentSection);
-    } else if (entrie != null) { // Cas d'une nouvelle entrée
-      var entrieName = mediainfo.getLangKey(detectedLang, entrie[1]);
-      currentSection[entrieName] = entrie[3];
-    } //else console.warn("Unreconized: ", l);
-  }
-  // --- FIN classification hierarchique des sections et des entrées ---
-  
-  /* A ce niveau, les informations sont classées hierarchiquement.
-   * Toutefois, toutes les informations sont des chaines de caractères même
-   * les valeurs numériques! (ex: hauteur d'une vidéo)
-   * Nous allons donc parser ces valeurs, du moins celles que l'on connait:
-   * Width, Height, FrameRate et Bits-(Pixel*Frame)
-   */
-  var s = getNamedSections(result, "Video");
-  for (var i=0; i<s.length; i++) {
-	s[i]["BitDepth"] = Number(/(\d+).?bits?/i.exec(s[i]["BitDepth"])[1]);
-    s[i]["Width"] = Number(/(\d+(\s\d+)*)/.exec(s[i]["Width"])[1].replace(" ",""));
-    s[i]["Height"] = Number(/(\d+(\s\d+)*)/.exec(s[i]["Height"])[1].replace(" ",""));
-    s[i]["FrameRate"] = Number(/(\d+(\.\d+)*)/.exec(s[i]["FrameRate"])[1]);
-    s[i]["Bits-(Pixel*Frame)"] = Number(/(\d+(\.\d+)*)/.exec(s[i]["Bits-(Pixel*Frame)"])[1]);
-  }
-  // --- FIN conversion des valeurs numériques
-  
-  return result;
-};
-
-
-
 /**
  * @param {RlzData} rlzData Objet de donnée à enrichir
- * @param {Array} nfoJson NFO parsé
+ * @param {MediaNFO} nfoJson NFO parsé
  * @returns {RlzData}
  */
-var nfoJsonDecoder = function(rlzData, nfoJson) {
-  var v = getFirstNamedSection(nfoJson, "Video");
+var mergeMediaNFOData = function(rlzData, nfoJson) {
+  var v = nfoJson.getFirstNamedSection("Video");
   
   rlzData.nfo = nfoJson;
   rlzData.video.framerate = v["FrameRate"]; // Ajout pour PAL/NTSC
@@ -363,6 +255,7 @@ var nfoJsonDecoder = function(rlzData, nfoJson) {
   
   return rlzData.normalize();
 };
+// #endregion Déclaration des mergeurs de données externes
 
 /**Méthode qui applique les données du NFO au formulaire
  * d'upload.
@@ -514,24 +407,22 @@ document.body.appendChild(hbs);
 
 var nfoInput = document.getElementsByName("nfo")[0];
 nfoInput.onchange = function(e) {
-	
-  var nfoFile = nfoInput.files[0];
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var nfoJson = nfo2json(reader.result); // On parse le NFO
-    var rlzName = getFirstNamedSection(nfoJson, "General")["CompleteName"]; // On extrait le nom de release (qui contient beaucoup d'infos)
-    var rlzData = extractFromReleaseName(rlzName); // On traite le nom de release
-    nfoJsonDecoder(rlzData, nfoJson);
-    var xhr = mdbproxy.allocine.build(
+	var nfoFile = nfoInput.files[0];
+	var reader = new FileReader();
+	reader.onload = function(e) {
+		var rlzData = new RlzData();
+		var nfoJson = new MediaNFO(reader.result); // On parse le NFO
+		var rlzName = nfoJson.getFirstNamedSection("General")["CompleteName"]; // On extrait le nom de release (qui contient beaucoup d'infos)
+		mergeDataIntoReleaseName(rlzData, rlzName); // On extrait les données du nom
+		mergeMediaNFOData(rlzData, nfoJson); // On extrait les données du NFO
+		var xhr = mdbproxy.allocine.build(
     		rlzData, 
     		function(rlzData) {
     			console.log(rlzData);
     			applyOnUploadPage(rlzData);
     		},
     		console.error);
-    xhr.send();
-    
-    
+		xhr.send();
   };
   reader.readAsText(nfoFile);
 };
