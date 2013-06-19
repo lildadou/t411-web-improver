@@ -52,10 +52,6 @@ var RlzData = function(){
 	}];
 	this.langs.tag	= null;
 };
-RlzData.prototype.__defineGetter__("isPAL", function() {
-	var f = this.video.framerate;
-	return ((f==25) || (f==50));
-});
 
 /**Il existe plusieurs codification d'un même concept. 
  * ex: bluray blueray bdr bdrip bd etc
@@ -284,7 +280,8 @@ var applyOnUploadPage = function(rlzData) {
   }
   
   var frmtSelect = document.getElementsByName("term[8][]")[0];
-  getOptByText(frmtSelect, rlzData.isPAL?/^PAL/:/^NTSC/).selected = true;
+  var fps = rlzData.video.framerate;
+  getOptByText(frmtSelect, (fps==25 || fps==50)?/^PAL/:/^NTSC/).selected = true;
   
   // #region Traitement des Langues
   var langSelect = document.getElementsByName("term[17][]")[0];
