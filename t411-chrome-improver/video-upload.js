@@ -208,7 +208,7 @@ var mergeDataIntoReleaseName = function(rlzData, uglyName) {
 	tags.push(extractedDatas.video.format);
 	tags.push(extractedDatas.video.codec);
 	tags.push(extractedDatas.langs[0].codec);
-	tags.push(extractedDatas.langs[0].lang);
+	tags.push(extractedDatas.langs.tag);
 	for (var i=0; i<tags.length; i++) rlzName=rlzName.replace(tags[i],"");
 	
 	
