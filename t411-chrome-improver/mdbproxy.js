@@ -305,11 +305,11 @@ mdbproxy.allocine = {
 	
 	build			: function(rlzData, onLoad, onError) {
 		// On doit commencer par récupérer l'ID de l'oeuvre avec un search
-		var istv = rlzData.general.serie;
+		var istvserie = rlzData.general.serie;
 		var searchParams = [
 	       	{key:'q',		value: rlzData.general.title},
 	       	{key:'format',	value: 'json'},
-	       	{key:'filter',	value: (istv)?'tvseries':'movie'},
+	       	{key:'filter',	value: (istvserie)?'tvseries':'movie'},
 	       	{key:'count',	value: '1'}
         ];
 		var searchRequest = new XMLHttpRequest();
@@ -320,7 +320,7 @@ mdbproxy.allocine = {
 		searchRequest.onload = function() {
 			// On doit extraire l'ID de l'oeuvre
 			var searchResults	= JSON.parse(searchRequest.responseText);
-			var rlzAllocineCode	= searchResults.feed[(istv)?'tvseries':'movie'][0].code;
+			var rlzAllocineCode	= searchResults.feed[(istvserie)?'tvseries':'movie'][0].code;
 			var getParams = [
  		       	{key:'code',	value: rlzAllocineCode},
 		       	{key:'profile',	value: 'large'},
@@ -329,10 +329,10 @@ mdbproxy.allocine = {
 	        ];
 			
 			var getRequest = new XMLHttpRequest();
-			getRequest.open('GET', mdbproxy.allocine.build_url((istv)?'tvseries':'movie', getParams), true);
+			getRequest.open('GET', mdbproxy.allocine.build_url((istvserie)?'tvseries':'movie', getParams), true);
 			getRequest.onerror = onError;
 			getRequest.onload = function() {
-				var getResults = JSON.parse(getRequest.responseText)[(istv)?'tvseries':'movie'];
+				var getResults = JSON.parse(getRequest.responseText)[(istvserie)?'tvseries':'movie'];
 				rlzData.allocine = getResults;
 				console.log(getResults);
 				
@@ -344,8 +344,10 @@ mdbproxy.allocine = {
 				rlzData.general.poster			= (getResults.poster)?getResults.poster.href:rlzData.general.poster;
 				rlzData.general.rating			= getResults.statistics.userRating;
 				rlzData.general.rating_count	= getResults.statistics.userRatingCount;
+				for (var i=0; i < getResults.genre.length; i++) 
+					mdbproxy.allocine.addGenre(rlzData, getResults.genre[i].$);
 				
-				if (istv) {
+				if (istvserie) {
 					rlzData.general.serie.episodeCount	= getResults.episodeCount;
 					rlzData.general.serie.seasonCount	= getResults.seasonCount;
 					rlzData.general.serie.episodeCount	= getResults.episodeCount;
@@ -365,6 +367,25 @@ mdbproxy.allocine = {
 		};
 		
 		return searchRequest;
+	},
+	
+	/**Ajoute le genre à la release
+	 */
+	addGenre		: function(rlzData, aGenre) {
+		var rlzGenres = rlzData.general.genres;
+		switch(aGenre) {
+		case "Comédie dramatique": rlzGenres.push("Drame & Comédie drama."); break;
+		case "Comédie musicale": 
+			rlzGenres.push("Comédie");
+			rlzGenres.push("Musical");
+			break;
+		case "Drame": rlzGenres.push("Drame & Comédie drama."); break;
+		case "Epouvante-horreur": rlzGenres.push("Epouvante & Horreur"); break;
+		case "Soap": rlzGenres.push("Romance"); break;
+		case "Médical": rlzGenres.push("Santé & Bien-être"); break;
+		case "Enquête": rlzGenres.push("Policier"); break;
+		default: rlzGenres.push(aGenre);
+		}
 	}
 };
 
