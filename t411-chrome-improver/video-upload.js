@@ -54,7 +54,7 @@ var RlzData = function(){
 };
 RlzData.prototype.__defineGetter__("isPAL", function() {
 	var f = this.video.framerate;
-	return (f)?(((f==25) || (f==50))?"PAL":"NTSC"):undefined;
+	return ((f==25) || (f==50));
 });
 
 /**Il existe plusieurs codification d'un même concept. 
