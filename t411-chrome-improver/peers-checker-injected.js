@@ -155,7 +155,7 @@ $("a.ajax[href^='/torrents/peers-list/']").overlay().onBeforeLoad=
 						var ecartRow = document.createElement("tr");
 						meanRow.innerHTML = '<td colspan="3" align="right">Moyenne</td><td>'+toHumanBytes(allDown.mean)+'</td><td>'+toHumanBytes(allUp.mean)+'</td><td>'+allRatio.mean.toFixed(4)+'</td>';
 						medianRow.innerHTML = '<td colspan="3" align="right">M&eacutediane</td><td>'+toHumanBytes(allDown.median)+'</td><td>'+toHumanBytes(allUp.median)+'</td><td>'+allRatio.median.toFixed(4)+'</td>';
-						ecartRow.innerHTML = '<td colspan="3" align="right">Ecart type</td><td>'+allDown.ecart.toFixed(2)+'</td><td>'+allUp.ecart.toFixed(2)+'</td><td>'+allRatio.ecart.toFixed(4)+'</td>';
+						ecartRow.innerHTML = '<td colspan="3" align="right">Ecart type</td><td>'+toHumanBytes(allDown.ecart)+'</td><td>'+toHumanBytes(allUp.ecart)+'</td><td>'+allRatio.ecart.toFixed(4)+'</td>';
 						var tbody = htmle.querySelector('tbody');
 						tbody.appendChild(meanRow);
 						tbody.appendChild(medianRow);
