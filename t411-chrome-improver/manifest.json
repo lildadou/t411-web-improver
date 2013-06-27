@@ -1,6 +1,6 @@
 {
 	"name": "T411-Improver",
-	"version": "13.6.17",
+	"version": "13.6.27",
 	"manifest_version": 2,
 	"description": "Extension pour t411.me qui améliore certains aspects du site.",
 	"icons": { 
@@ -12,6 +12,7 @@
 	"background": {
     	"scripts": ["background.js"]
     },
+    //"options_page": "options.html",
 
 	"content_scripts": [ 
 		{ 
@@ -30,6 +31,10 @@
 				"mediainfo.js",
 				"mdbproxy.js",
 				"video-upload.js"]
+       }, { 
+			"matches": [
+				"http://www.t411.me/torrents/*", "https://www.t411.me/torrents/*"], 
+			"js": ["peers-checker.js"]
        }, { 
 			"matches": [
 				"http://forum.t411.me/*",
@@ -66,6 +71,7 @@
 		"Download-64.png",
 		"Contact-32.png",
 		"default-template.txt",
-		"handlebars.js"
+		"handlebars.js",
+		"peers-checker-injected.js"
 	]
 }
