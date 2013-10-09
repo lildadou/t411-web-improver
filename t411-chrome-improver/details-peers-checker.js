@@ -3,7 +3,10 @@
 
 // T411 place 2 fois le même handler pour l'affichage des peers.
 // On doit supprimer l'élément, le recréer et refaire un overlay propre avec le hook
+(function() {
 var jElem = $("a.ajax[href^='/torrents/peers-list/']");
+if (jElem.length == 0) return;
+
 var jParent = jElem.parent();
 var domElem = jElem[0];
 var backup = {
@@ -87,4 +90,5 @@ $("a.ajax[href^='/torrents/peers-list/']").overlay({
 				});
 	}
 });
+})();
 // #endregion
