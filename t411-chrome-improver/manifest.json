@@ -8,11 +8,9 @@
 		"48": "logo48.png",
 		"128": "logo128.png" },
 
-	/* L'API webRequest ne fonctionne que en background */
 	"background": {
     	"scripts": ["background.js"]
     },
-    //"options_page": "options.html",
 
 	"content_scripts": [ 
 		{ 
@@ -49,13 +47,8 @@
 			"matches": [
 				"http://www.t411.me/torrents/search/*",
 				"https://www.t411.me/torrents/search/*"],
-			"js": ["fast-dl.js", "mass-signal.js"] 
-       }/*, { 
-			"matches": [
-				"http://www.t411.me/my/bookmarks/",
-				"https://www.t411.me/my/bookmarks/"], 
-			"js": ["flexget.js"] 
-       }*/],
+			"js": ["fast-dl.js"] 
+       }],
 
 	"permissions": [
 		"webRequest",
