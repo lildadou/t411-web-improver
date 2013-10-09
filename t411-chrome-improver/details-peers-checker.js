@@ -1,15 +1,48 @@
 // Pour faire du traitement sur les données DL/UL des peers
-// #region Original:https://www.t411.me/themes/blue/js/theme.min.js
-$("a.ajax[href^='/torrents/peers-list/']").overlay().onBeforeLoad=
-	function() {
+// Original:https://www.t411.me/themes/blue/js/theme.js
+
+// T411 place 2 fois le même handler pour l'affichage des peers.
+// On doit supprimer l'élément, le recréer et refaire un overlay propre avec le hook
+var jElem = $("a.ajax[href^='/torrents/peers-list/']");
+var jParent = jElem.parent();
+var domElem = jElem[0];
+var backup = {
+	textContent	: domElem.textContent,
+	url			: domElem.getAttribute("href"),
+	styleList	: domElem.style.toString(),
+	classList	: domElem.classList.toString()
+};
+jElem.remove();
+
+// Création du nouvel élément
+domElem = document.createElement("a");
+jParent.append(domElem);
+domElem.href		= backup.url;
+domElem.textContent = backup.textContent;
+domElem.classList.add("ajax");
+domElem.style.display="block"; // Pour rendre le div clicable
+
+// Accrochage de l'overlay
+$("a.ajax[href^='/torrents/peers-list/']").overlay({
+    top: 160,
+    target:'#info',
+    effect: 'apple',
+    api:true,
+    onBeforeLoad: function() {
+		// On recupere l'URL pour l'AJAX
 		var href = this.getTrigger().attr('href');
+		
+		// On met en place le loader
 		$('#info')
 				.find('.inner')
 				.html('<span class=\"loading\">Loading...</span>');
+		
+		// La requete AJAX
 		$.ajax({
 					url : href,
 					dataType : 'json',
 					success : function(data) {
+						// On fait comme l'original
 						var inner = $('#info').find('.inner');
 						inner.html(data.response);
 						var htmle = inner[0];
@@ -52,5 +85,6 @@ $("a.ajax[href^='/torrents/peers-list/']").overlay().onBeforeLoad=
 						// #endregion
 					}
 				});
-	};
+	}
+});
 // #endregion
