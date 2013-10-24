@@ -120,20 +120,17 @@
 	var replaceBbcodeEditor = function() {
 		// On charge le formulaire à injecter
 		loadAppContent("wysiwyg-bbcode/form.html", function(xhr) {
+			// Cette fonction sert à donner les emplacement des icones de la barre d'édition
+			
+			// Substitution des emplacements d'images
+			var rImgBackGrnd = /background-image:url\('(.+)'\)/g;
+			var formHtml = xhr.responseText.replace(rImgBackGrnd, function(g, rUrl) {
+				return "background-image:url('"+chrome.extension.getURL(rUrl)+"')";
+			});
+			
 			// On créer le nouvel éditeur
 			var builder = document.createElement("div");
-			builder.innerHTML = xhr.responseText;
-			
-			// Cette fonction sert à donner les emplacement des icones de la barre d'édition
-			var docRelLoc = getRelativeLocation();
-			var imgButs = ['hyperlink', 'image', 'list', 'color', 'quote', 'youtube', 'switch to source'];
-			for (var i=0; i<imgButs.length; i++) {
-				var bStyle = builder.querySelector("button[title='"+imgButs[i]+"']").style;
-				var relExtractor = new RegExp("^url\\("+docRelLoc+"(.+)\\)$");
-				var imgRelLoc = relExtractor.exec(bStyle.getPropertyCSSValue("background-image").cssText)[1];
-				var imgLoc = "wysiwyg-bbcode/"+imgRelLoc;
-				bStyle.setProperty('background-image', "url("+chrome.extension.getURL(imgLoc)+")");
-			}
+			builder.innerHTML = formHtml;
 			
 			// Injection
 			var msgForm	= document.querySelector("div.MessageForm");
