@@ -1,7 +1,8 @@
 {
-	"name": "T411-Improver",
-	"version": "13.10.9",
 	"manifest_version": 2,
+	"name": "T411-Improver",
+	"version": "13.10.24",
+	
 	"description": "Extension pour t411.me qui améliore certains aspects du site.",
 	"icons": { 
 		"16": "logo16.png",
@@ -38,7 +39,7 @@
 				"http://forum.t411.me/*",
 				"https://forum.t411.me/*"], 
 			"all_frames": true, 
-			"js": ["forum.js"] 
+			"js": ["common.js", "forum.js"] 
        }, { 
 			"matches": [
 				"https://*.t411.me/*"], 
@@ -66,6 +67,7 @@
 		"default-template.txt",
 		"handlebars.js",
 		"lib-peers-checker.js",
-		"details-peers-checker.js"
+		"details-peers-checker.js",
+		"wysiwyg-bbcode/*"
 	]
 }

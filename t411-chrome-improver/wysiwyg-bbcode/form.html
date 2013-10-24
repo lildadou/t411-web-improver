@@ -1,0 +1,20 @@
+<form id="Form_Comment" method="post" action="/vanilla/post/comment">
+	<div class="richeditor">
+		<div class="editbar">
+			<button title="bold" onclick="wswgEditor.doClick('bold');" type="button"><b>B</b></button>
+			<button title="italic" onclick="wswgEditor.doClick('italic');" type="button"><i>I</i></button>
+			<button title="underline" onclick="wswgEditor.doClick('underline');" type="button"><u>U</u></button>
+			<button title="hyperlink" onclick="wswgEditor.doLink();" type="button" style="background-image:url('images/url.gif');"></button>
+			<button title="image" onclick="wswgEditor.doImage();" type="button" style="background-image:url('images/img.gif');"></button>
+			<button title="list" onclick="wswgEditor.doClick('InsertUnorderedList');" type="button" style="background-image:url('images/icon_list.gif');"></button>
+			<button title="color" onclick="wswgEditor.showColorGrid2('none')" type="button" style="background-image:url('images/colors.gif');"></button><span id="colorpicker201" class="colorpicker201"></span>
+			<button title="quote" onclick="wswgEditor.doQuote();" type="button" style="background-image:url('images/icon_quote.png');"></button>
+			<button title="youtube" onclick="wswgEditor.InsertYoutube();" type="button" style="background-image:url('images/icon_youtube.gif');"></button>
+			<button title="switch to source" type="button" onclick="wswgEditor.SwitchEditor()" style="background-image:url('images/icon_html.gif');"></button>
+		</div>
+		
+		<div class="container"><textarea id="commentArea" name="Comment/Body" style="height:150px;width:100%;"></textarea></div>
+	</div>
+	<!-- the onclick is IMPORTANT!!!!!!!!!!!!!!!!!!-->
+	<input type="submit" onclick="wswgEditor.doCheck();" />
+</form>

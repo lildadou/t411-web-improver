@@ -1,6 +1,5 @@
 (function() {
 	var icoT411ProfileUrl = chrome.extension.getURL("Contact-32.png");
-	//var icoT411ProfileUrl = "http://www.t411.me/images/avatar/54/6505954_Phoenix10498.gif?18117";
 	var pseudoTaker = /\/([^\/]+)$/;
 	
 	var buildForumProfileUrl = function(pseudo) {
@@ -111,8 +110,54 @@
 	 */
 	var bblinks = document.querySelectorAll('a.bbcode_url');
 	for (var i=0; i<bblinks.length; i++) {
-	var aBBLink=bblinks[i];
-	aBBLink.style.textDecoration="underline";
-	aBBLink.style.color="blue";
+		var aBBLink=bblinks[i];
+		aBBLink.style.textDecoration="underline";
+		aBBLink.style.color="blue";
 	}
+	
+	
+	/**Injection de l'éditeur bbcode WYSIWYG */
+	var replaceBbcodeEditor = function() {
+		// On charge le formulaire à injecter
+		loadAppContent("wysiwyg-bbcode/form.html", function(xhr) {
+			// On créer le nouvel éditeur
+			var builder = document.createElement("div");
+			builder.innerHTML = xhr.responseText;
+			
+			// Cette fonction sert à donner les emplacement des icones de la barre d'édition
+			var docRelLoc = getRelativeLocation();
+			var imgButs = ['hyperlink', 'image', 'list', 'color', 'quote', 'youtube', 'switch to source'];
+			for (var i=0; i<imgButs.length; i++) {
+				var bStyle = builder.querySelector("button[title='"+imgButs[i]+"']").style;
+				var relExtractor = new RegExp("^url\\("+docRelLoc+"(.+)\\)$");
+				var imgRelLoc = relExtractor.exec(bStyle.getPropertyCSSValue("background-image").cssText)[1];
+				var imgLoc = "wysiwyg-bbcode/"+imgRelLoc;
+				bStyle.setProperty('background-image', "url("+chrome.extension.getURL(imgLoc)+")");
+			}
+			
+			// Injection
+			var msgForm	= document.querySelector("div.MessageForm");
+			var editorContainer = msgForm.parentElement;
+			var newForm = builder.children[0];
+			editorContainer.appendChild(newForm);
+			
+			// L'éditeur est créer, on va lui ajouter les inputs caché de l'éditeur d'origine
+			var hiddenInputs = msgForm.querySelectorAll("input[type='hidden']");
+			for (var i=0; i<hiddenInputs.length; i++) {
+				newForm.appendChild(hiddenInputs[i]);
+			}
+			
+			// On remplace l'ancien éditeur
+			editorContainer.removeChild(msgForm);
+			
+			// Une fois le formulaire injecté, on injecte l'API
+			// Quand l'API est chargé, on initialise le formulaire avec l'API
+			injectScript("wysiwyg-bbcode/editor.js", function(){
+				executeScriptOnPage('wswgEditor.initEditor("commentArea", true);');
+			});
+			injectStyle("wysiwyg-bbcode/editor.css");
+		});
+	};
+	replaceBbcodeEditor();
+	
 })();
