@@ -175,6 +175,10 @@ var mergeDataIntoReleaseName = function(rlzData, uglyName) {
 	// Filtre pour les séries
 	var rSeries = /S(\d+)E(\d+)/;
 	
+	// Filtres de team
+	// [Team.machin]... ou ...-TEAM truc
+	//var rTeam = /(^\[[^\]+\]|-[^-]+$)/i;
+	
 	// Filtre pour le reste
 	var rUnknow = /[ _\,\.\(\)\[\]\-]{2,}.*$/i;
 	
@@ -418,7 +422,7 @@ nfoInput.onchange = function(e) {
     			console.log(rlzData);
     			applyOnUploadPage(rlzData);
     		},
-    		console.error);
+    		function() { applyOnUploadPage(rlzData); });
 		xhr.send();
   };
   reader.readAsText(nfoFile);
