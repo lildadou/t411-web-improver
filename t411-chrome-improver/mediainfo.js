@@ -69,7 +69,7 @@ MediaNFO.prototype = {
 	 * section (General, Video, Text, ...)
 	*/
 	_load					: function(nfoText) {
-	  var lines = nfoText.split('\n'); //On découpe en ligne par ligne
+	  var lines = nfoText.split('\r\n'); //On découpe en ligne par ligne
 	  var sectionRegex = /^[^\s]+$/; //RegExp qui match un début de section (General, Video)
 	  var entrieRegex =  /^([^\s]+(\s[^\s]+)*)\s+: (.+)$/; //RegExp qui match une entré (Width:  220px)
 
@@ -77,10 +77,13 @@ MediaNFO.prototype = {
 	   * On determine la langue. Pour ce faire, pour chaque langue on va compter 
 	   * le nombre d'occurence. La langue qui détient le plus d'occurence remporte le test
 	   */
+	  console.log("mediainfo: Début de parsage d'un NFO de "+lines.length+" lignes");
+	  console.log(lines);
 	  var langCount = {};
 	  for (var i=0; i<lines.length; i++) {
 	    var l = lines[i];
 	    var sectionName = sectionRegex.exec(l);
+	    console.log(l);
 	    var entrie = entrieRegex.exec(l);
 	    if (sectionName != null) {
 	      var detectLang = mediainfo.getLangBySample(sectionName[0]);
@@ -94,12 +97,18 @@ MediaNFO.prototype = {
 		  	else langCount[detectLang]++;
 	    }
 	  }
+	  
+	  console.log("mediainfo: Les scores de détection de langues");
+	  console.log(langCount);
 	  var detectedLang = "Language_ISO639";
 	  var detectedLangScore = 0;
-	  for (var langId in langCount) if (langCount[langId] > detectedLangScore) {
-		  detectedLangScore = langCount[langId];
-		  detectedLang = langId;
+	  for (var langId in langCount) {
+		  if (langCount[langId] > detectedLangScore) {
+			  detectedLangScore = langCount[langId];
+		  	detectedLang = langId;
+		  }
 	  }
+	  console.log("mediainfo: Langue détéctée: "+detectedLang);
 	  // #endregion de détection de la langue ---
 	  
 	  /* #region classification hierarchique des sections et des entrées
@@ -165,7 +174,6 @@ var loadTranslations = function(fName) {
 		var csvLines = xhr.responseText.split("\n"); xhr=null;
 		var csvArray = [];
 		for (var i=0; i<csvLines.length; i++) csvArray.push(csvLines[i].split(";"));
-		csvLines=null;
 		
 		// Language Index
 		var langIndex = [];
@@ -180,6 +188,9 @@ var loadTranslations = function(fName) {
 			for (var token=0; token<csvArray[line].length; token++) {
 				mediainfo.languages[langIndex[token]].push(csvArray[line][token]);
 			}
+		
+		console.log("mediainfo: Fichier de langues chargé");
+		console.log(mediainfo.languages);
 	};
 	xhr.send();
 };
