@@ -74,10 +74,10 @@ var getBytes = function(text) {
 	var vol = Number(re.exec(text)[1]);
 	var mult = re.exec(text)[3];
 	switch(mult) {
-	case undefined: mult=1; break;
-	case 'M': mult=1024; break;
-	case 'G': mult=1024*1024; break;
-	case 'T': mult=1024*1024*1024; break;
+		case undefined: mult=1; break;
+		case 'M': mult=1024; break;
+		case 'G': mult=1024*1024; break;
+		case 'T': mult=1024*1024*1024; break;
 	}
 	return vol*mult;
 };
