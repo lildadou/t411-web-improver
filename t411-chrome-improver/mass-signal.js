@@ -19,22 +19,22 @@ var ajax = function(url, params, onDone, onFail) {
 // Fonction de signalement de un torrent
 var sendSignal = function(tId, signalMsg) {
 	ajax("/torrents/report/?id="+tId, "type=1&reason="+signalMsg,
-			(function(i){ return function() {console.log(i," signalé")} })(tId)),
-			(function(i){ return function() {console.error(i,"PAS signalé")} })(tId);
+			(function(i){ return function() {console.log(i," signalé");};})(tId)),
+			(function(i){ return function() {console.error(i,"PAS signalé");};})(tId);
 };
 
 // Fonction de signalement de un torrent par commentaire
 var sendCommentaire = function(tId, signalMsg) {
 	ajax("/torrents/comments/", "id="+tId+"&comment="+signalMsg,
-			(function(i){ return function() {console.log(i," cmt posté")} })(tId)),
-			(function(i){ return function() {console.error(i," cmt PAS posté")} })(tId);
+			(function(i){ return function() {console.log(i," cmt posté");};})(tId)),
+			(function(i){ return function() {console.error(i," cmt PAS posté");};})(tId);
 };
 
 // Fonction de signalement de un torrent par commentaire
 var vote = function(tId, vote) {
 	ajax("/torrents/vote/?vote="+vote+"&id="+tId, "",
-			(function(i){ return function() {console.log(i," vote prez")} })(tId)),
-			(function(i){ return function() {console.error(i," PAS vote prez")} })(tId);
+			(function(i){ return function() {console.log(i," vote prez");};})(tId)),
+			(function(i){ return function() {console.error(i," PAS vote prez");}; })(tId);
 };
 
 
@@ -45,7 +45,7 @@ var checkbox = document.createElement("input");
 checkbox.type = "checkbox";
 checkbox.onchange = function() {
 	var c = document.querySelectorAll("table.results>tbody input[type=checkbox]");
-	for (i=0; i<c.length; i++) c[i].checked=checkbox.checked;
+	for (var i=0; i<c.length; i++) c[i].checked=checkbox.checked;
 };
 selectAll.appendChild(checkbox);
 headRow.insertBefore(selectAll, headRow.children[0]);
