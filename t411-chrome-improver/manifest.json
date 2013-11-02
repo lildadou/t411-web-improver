@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "T411-Improver",
-	"version": "13.10.24.3",
+	"version": "13.10.30",
 	
 	"description": "Extension pour t411.me qui améliore certains aspects du site.",
 	"icons": { 
@@ -47,7 +47,9 @@
        }, { 
 			"matches": [
 				"http://www.t411.me/torrents/search/*",
-				"https://www.t411.me/torrents/search/*"],
+				"https://www.t411.me/torrents/search/*",
+				"http://www.t411.me/top/today/",
+				"https://www.t411.me/top/today/"],
 			"js": ["fast-dl.js"] 
        }],
 
