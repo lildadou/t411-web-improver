@@ -5,7 +5,8 @@
 // On doit supprimer l'élément, le recréer et refaire un overlay propre avec le hook
 (function() {
 var jElem = $("a.ajax[href^='/torrents/peers-list/']");
-if (jElem.length == 0) return;
+if (jElem.length == 0) {console.log("Module details-peers-checker non-activé"); return; }
+else console.log("Module details-peers-checker activé");
 
 var jParent = jElem.parent();
 var domElem = jElem[0];

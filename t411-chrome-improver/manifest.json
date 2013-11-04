@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "T411-Improver",
-	"version": "13.10.30",
+	"version": "13.11.4",
 	
 	"description": "Extension pour t411.me qui améliore certains aspects du site.",
 	"icons": { 
@@ -33,7 +33,7 @@
        }, { 
 			"matches": [
 				"http://www.t411.me/torrents/*", "https://www.t411.me/torrents/*"], 
-			"js": ["details-peers-checker-injector.js"]
+			"js": ["common.js", "torrentPage-injector.js"]
        }, { 
 			"matches": [
 				"http://forum.t411.me/*",
@@ -70,6 +70,7 @@
 		"handlebars.js",
 		"lib-peers-checker.js",
 		"details-peers-checker.js",
-		"wysiwyg-bbcode/*"
+		"wysiwyg-bbcode/*",
+		"torrentComsResponse.js"
 	]
 }
