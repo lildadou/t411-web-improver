@@ -34,13 +34,21 @@ function injectScript(filename, onload) {
 	(document.head||document.documentElement).appendChild(s);
 };
 
-function executeScriptOnPage(textScript) {
+/**Injecte un script sous forme textuel dans la page.
+ * @param textScript Le contenu du script
+ * @param onload {Function}
+ */
+function executeScriptOnPage(textScript, onload) {
 	var s = document.createElement("script");
 	s.type	= "text/javascript";
 	s.textContent = textScript;
+	if (onload) s.onload = onload;
 	(document.head||document.documentElement).appendChild(s);
 }
 
+/**Injecte une feuille de style dans la page.
+ * @param filename {String} Le chemin interne de la feuille de style
+ */
 function injectStyle(filename) {
 	var s = document.createElement("link");
 	s.href	= chrome.extension.getURL(filename);
@@ -49,6 +57,10 @@ function injectStyle(filename) {
 	(document.head||document.documentElement).appendChild(s);
 }
 
+/**Donne le chemin relative de la page. Par exemple 
+ * http://www.t411.me/lolcat/trucmuche retourne http://www.t411.me/lolcat/
+ * @returns
+ */
 function getRelativeLocation() {
 	return /^(.+\/)([^\/])*$/.exec(location.href)[1];
 }
