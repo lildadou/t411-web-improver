@@ -23,8 +23,8 @@ $('#comment-form').submit(function(){
 	
 	var torrentTitle = document.querySelector("div.torrentDetails>h2>span")
 						.firstChild.textContent.trim();
-	var messageBody	= 'Un utilisateur vous a répondu sur le torrent "'+torrentTitle
-	+'", voici sa réponse:\n[quote]'+comment+'[/quote]\n';
+	var messageBody	= 'Un utilisateur vous a mentionné sur le torrent "'+torrentTitle
+	+'", voici son message:\n[quote]'+comment+'[/quote]\n';
 	
 	var noticeBody = "";
 	for (var i=0; i<userTags.length; i++) {
