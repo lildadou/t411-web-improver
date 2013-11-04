@@ -14,6 +14,28 @@ String.prototype.matchAll = function( regExp ){
  return matches;
 };
 
+/**Encode les données envoyées au serveur en iso-8859-1
+ * plutôt qu'en UTF-8
+ * @param formData {Object|String}
+ */
+function formDataISOEncode(formData) {
+	var stringEncoder = function(s) { return escape(s); };
+	switch (typeof(formData)) {
+	case 'string': return stringEncoder(formData);
+	case 'object':
+		var result = '';
+		var isFirstEntry = true;
+		for (var anEntry in formData) {
+			if (isFirstEntry) isFirstEntry=false;
+			else result += '&';
+			result += anEntry+'='+stringEncoder(formData[anEntry].toString());
+		}
+		return result;
+	default: return '';
+	}
+	return '';
+}
+
 // Permet d'envoyer automatiquement un MP aux personnes quotés
 // lorsque l'on rédige un commentaire sur un torrent
 $('#comment-form').submit(function(){
@@ -36,17 +58,23 @@ $('#comment-form').submit(function(){
 		else if (i == userTags.length-1) noticeBody += " et "+username;
 		else noticeBody += ', '+username;
 		
-		$.ajax({
-            url: '/mailbox/compose/',
-            type: 'post',
-            data: {
-            	'receiverName'	: username,
-            	'subject'		: 'Quelqu\'un a répondu à l\'un de vos commentaires',
-            	'msg'			: messageBody,
-            	'save'			: 'on'
-            },
-            success: function(){ console.log("Message envoyé avec succès à "+username);}
-        });
+		// Re-scopage pour Issue #3
+		var subject = 'Quelqu\'un a répondu à l\'un de vos commentaires';
+		
+		(function() {
+			var un = username;
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', '/mailbox/compose/', true);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=ISO-8859-1");
+			//xhr.overrideMimeType("application/x-www-form-urlencoded; charset=ISO-8859-1");
+			xhr.onload = function() { console.log("Message envoyé avec succès à "+un); };
+			xhr.send(formDataISOEncode({
+				'receiverName':	username,
+				'subject':		subject,
+				'msg':			messageBody,
+				'save':			'on'
+            }));
+		})();
 	}
 	
 	noticeBody += (userTags.length == 1)

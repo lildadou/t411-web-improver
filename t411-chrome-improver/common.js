@@ -30,6 +30,7 @@ function injectScript(filename, onload) {
 	var s = document.createElement("script");
 	s.src = chrome.extension.getURL(filename);
 	s.type	= "text/javascript";
+	s.charset = 'UTF-8';
 	if (onload) s.onload = onload;
 	(document.head||document.documentElement).appendChild(s);
 };
@@ -41,6 +42,7 @@ function injectScript(filename, onload) {
 function executeScriptOnPage(textScript, onload) {
 	var s = document.createElement("script");
 	s.type	= "text/javascript";
+	s.charset = 'UTF-8';
 	s.textContent = textScript;
 	if (onload) s.onload = onload;
 	(document.head||document.documentElement).appendChild(s);
