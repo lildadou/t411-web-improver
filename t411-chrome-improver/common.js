@@ -66,3 +66,35 @@ function injectStyle(filename) {
 function getRelativeLocation() {
 	return /^(.+\/)([^\/])*$/.exec(location.href)[1];
 }
+
+var dojo = {};
+dojo.getProp	= function(canonProps, create, context, defaultValue) {
+	if (canonProps.length<=0) return context;
+	if (!context) throw new Error('no context');
+	
+	var prop = context[canonProps[0]];
+	if (typeof(prop)!='undefined') return dojo.getProp(canonProps.slice(1), create, prop);
+	else {
+		if (create) {
+			context[canonProps] = (canonProps.length > 1)?{}:(defaultValue)?defaultValue:null;
+			return dojo.getProp(canonProps.slice(1), create, context[canonProps]);
+		}
+	}
+};
+
+dojo.getObject	= function(name, create, context){
+    // summary:
+    //                Get a property from a dot-separated string, such as "A.B.C"
+    // description:
+    //                Useful for longer api chains where you have to test each object in
+    //                the chain, or when you have an object reference in string format.
+    // name: String
+    //                Path to an property, in the form "A.B.C".
+    // create: Boolean?
+    //                Optional. Defaults to `false`. If `true`, Objects will be
+    //                created at any point along the 'path' that is undefined.
+    // context: Object?
+    //                Optional. Object to use as root of path. Defaults to
+    //                'dojo.global'. Null may be passed.
+    return dojo.getProp(name.split("."), create, context); // Object
+};
