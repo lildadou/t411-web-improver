@@ -1,0 +1,82 @@
+<html>
+	<head>
+		<meta charset="utf8" />
+		<script type="text/javascript" charset="utf8" src="../common.js"></script>
+		<script type="text/javascript" charset="utf8" src="./settings.js"></script>
+		<title>Page de configuration de T411-Improver</title>
+	</head>
+	<body>
+		<nav>
+			<ul>
+				<li>Force HTTPS</li>
+				<li>Fast Download</li>
+				<li>Mass Signal</li>
+				<li>WYSIWYG</li>
+				<li>Peers Stats</li>
+				<li>Auto Prez</li>
+				<li>Comment Notifier</li>
+			</ul>
+		</nav>
+		<section>
+			<article>
+				<h2>Force HTTPS</h2>
+				<p>Il existe beaucoup de liens sur T411 qui font quitter la navigation sécurisée. Cette fonctionnalité propose les options qui permettent de maintenir la navigation sécurisée plus surement.</p>
+				<div><ul>
+					<li><input type="checkbox" id="forcehttps.interne"/><span>Corriger les liens internes</span></li>
+				</ul></div>
+			</article>
+			<article>
+				<h2>Fast Download</h2>
+				<p>T411 impose à ses utilisateurs d'aller sur la page de présentation d'un torrent avant de pouvoir le télécharger. Cette fonctionnalité ajoute un discret bouton à côté de celui servant à la prévisualition du NFO.</p>
+				<div><ul>
+					<li><input type="checkbox" id="fastdownload.shortcut"/><span>Ajouter un raccourci de téléchargement des torrents</span></li>
+				</ul></div>
+			</article>
+			<article>
+				<h2>Mass Signal</h2>
+				<p>Quantité de torrents sur T411 ne respectent pas les règles d'uploads. Cette fonctionnalité permet signaler rapidement des torrents présentant le même défaut.</p> 
+				<div><ul>
+					<li><input type="checkbox" id="masssignal.optUploaderPub" /><span>Pré-cocher la notification de l'uploader via les Commentaires</span></li>
+					<li><input type="checkbox" id="masssignal.optUploaderPriv" /><span>Pré-cocher la notification de l'uploader via les Messages privés</span></li>
+					<li><input type="checkbox" id="masssignal.optTPending" /><span>Pré-cocher la notification de la Team Pending</span></li>
+					<li><input type="checkbox" id="masssignal.optVoteBad" /><span>Pré-cocher le vote Mauvaise Prez</span></li>
+				</ul></div>
+			</article>
+			<article>
+				<h2>WYSIWYG</h2>
+				<p>Il existe de nombreux endroits où il possible de rédiger un message : forum, commentaire, messages privés etc. Il est possible d'ajouter du style, des images, des vidéos Youtube etc à la condition de connaitre la syntaxe BBCode. Cette fonctionnalité propose de remplacer les éditeurs par défauts par des éditeurs <abbr title="What You See Is What You Get">WYSIWYG</abbr> plus simple d'utilisation. 
+				<div><ul>
+					<li><input type="checkbox" id="wysiwyg.forum"/><span>Utiliser l'éditeur <abbr title="What You See Is What You Get">WYSIWYG</abbr> sur le forum</span></li>
+				</ul></div>
+			</article>
+			<article>
+				<h2>Peers Stats</h2>
+				<p>Pour préserver la bonne santé du tracker, il est demandé au Uploaders de surveiller les peers sur leurs torrents. En effet, il est possible de repérer des tricheurs en observant les quantités d'upload. Ainsi un peer qui a uploadé des centaines de Go alors que les Power Seeders seulement quelques dizaines a de grandes chances d'être un tricheur. Cette fonctionnalité enrichie les listes de peers de statistiques descriptives de base et ajoute une coloration en fonction de l'écart à la médiane.</p>
+				<div><ul>
+					<li><input type="checkbox" id="peerstats.use" /><span>Afficher les statistiques descriptives dans la liste des peers</span></li>
+					<li><span>Colorier les ratios en orange lorsqu'ils s'écartent d'au moins <input id="peerstats.orangeSigma" type="number" min="0" step="0.1" style="width:50px"/>σ de la médiane</span></li>
+					<li><span>Colorier les ratios en rouge lorsqu'ils s'écartent d'au moins <input id="peerstats.rougeSigma" type="number" min="0" step="0.1" style="width:50px"/>σ de la médiane</span></li>
+				</ul></div>
+			</article>
+			<article>
+				<h2>Coment Notifier</h2>
+				<p>Seul l'Uploader est notifié lorsque vous commentez un torrent. Cette fonctionnalité permet de notifier par message privé les autres participants à la discussion ou ceux que vous avez mentionné dans votre commentaire. Les pseudos utilisés sur Internet prennent des formes très variées et il est coutume d'ajouter un @ à un pseudo lorsque l'on souhaite mentionner quelqu'un.</p>
+				<div><ul>
+					<li><input id="commentNotifier.signalMentionned" type="checkbox" /><span>Notifier toutes les personnes que j'ai mentionné lorsque je laisse un commentaire</span></li>
+					<li><span>Notifier les <input id="commentNotifier.signalLastAuthor" type="number" min="1" max="10" style="width:40px" /> derniers auteurs lorsque je laisse un commentaire</span></li>
+				</ul></div>
+			</article>
+			<article>
+				<h2>Auto Prez</h2>
+				<p>Réaliser une présentation de torrent est longue, fastideuse et sujette aux erreurs. Cette fonctionnalité propose de réaliser automatiquement les présentations de films et séries à partir des informations contenues dans un NFO produit pas le logiciel <a href="http://mediaarea.net/fr/MediaInfo">MediaInfo</a>.</p>
+				<div><ul>
+					<li><input id="autoprez.video.detectCat" type="checkbox" /><span>Détecter automatiquement les catégories</span></li>
+					<li><input id="autoprez.video.buildPrez" type="checkbox" /><span>Réaliser automatiquement la fiche de présentation</span></li>
+				</ul>
+				<textarea rows="20" cols="80"></textarea>
+				</div>
+			</article>
+		</section>
+		<script type="text/javascript" charset="utf8" src="settings_ctrl.js"></script>
+	</body>
+</html>
