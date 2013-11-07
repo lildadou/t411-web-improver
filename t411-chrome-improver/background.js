@@ -9,6 +9,10 @@
 var url_api			= 'http://api.allocine.fr/rest/v3/';
 var user_agent		= 'Dalvik/1.6.0 (Linux; U; Android 4.2.2; Nexus 4 Build/JDQ39E)';
 
+/**Change le User-Agent d'une webRequest de façon à ce 
+ * qu'elle soit acceptée par le service AlloCiné.
+ * @param details {WebRequest}
+ */
 var alloUserCorrector = function(details) {
 	var isSuccess = false;
 	for (var i = 0; i < details.requestHeaders.length; ++i) {
@@ -21,6 +25,11 @@ var alloUserCorrector = function(details) {
     console.log("Allocine-API request intercepted ("+details.url+") with"+((isSuccess)?"":"out")+" success.");
      return {'requestHeaders': details.requestHeaders};
 };
+
+/* On demande à Chrome de nous prévenir et de retenir 
+ * toutes requête à destination de AlloCiné juste 
+ * avant qu'il envoie les headers.
+ */
 chrome.webRequest.onBeforeSendHeaders.addListener(
 	alloUserCorrector,
 	{urls: [url_api+'*']},
