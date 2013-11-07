@@ -69,24 +69,31 @@ function Stats(arr) {
 };
 // #endregion
 
+var kbCoeff = Math.pow(1024, 1);
+var mbCoeff = Math.pow(1024, 2);
+var gbCoeff = Math.pow(1024, 3);
+var tbCoeff = Math.pow(1024, 4);
+
 var getBytes = function(text) {
 	var re = /(\d+(\.\d+)?) ([MGT])?B/;
 	var vol = Number(re.exec(text)[1]);
 	var mult = re.exec(text)[3];
 	switch(mult) {
 		case undefined: mult=1; break;
-		case 'M': mult=1024; break;
-		case 'G': mult=1024*1024; break;
-		case 'T': mult=1024*1024*1024; break;
+		case 'K': mult=kbCoeff; break;
+		case 'M': mult=mbCoeff; break;
+		case 'G': mult=gbCoeff; break;
+		case 'T': mult=tbCoeff; break;
 	}
 	return vol*mult;
 };
 
 var toHumanBytes = function(b) {
-	if (b<1024) return b+" B";
-	else if (b<1024*1024) return (b/1024).toFixed(2)+" MB";
-	else if (b<1024*1024*1024) return (b/(1024*1024)).toFixed(2)+" GB";
-	else return (b/(1024*1024*1024)).toFixed(2)+" TB";
+	if (b<kbCoeff) return b+" B";
+	else if (b<mbCoeff) return (b/kbCoeff).toFixed(2)+" KB";
+	else if (b<gbCoeff) return (b/mbCoeff).toFixed(2)+" MB";
+	else if (b<tbCoeff) return (b/(gbCoeff)).toFixed(2)+" GB";
+	else return (b/(tbCoeff)).toFixed(2)+" TB";
 };
 
 var extractPeersInfo = function(html) {
