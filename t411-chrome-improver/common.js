@@ -82,6 +82,22 @@ dojo.getProp	= function(canonProps, create, context, defaultValue) {
 	}
 };
 
+dojo.set		= function(name, create, context, value) {
+	var path = name.split('.');
+	var setRec	= function(ar,crt,ctx, val) {
+		if (typeof(ctx) == 'undefined') return;
+		if (ar.length <= 0) return;
+		
+		if ((ar.length == 1) && (ctx.hasOwnProperty(ar[0]) || crt)) ctx[ar[0]] = val;
+		else {
+			if (!ctx.hasOwnProperty(ar[0]) && crt) ctx[ar[0]] = {};
+			return setRec(ar.slice(1), crt, ctx[ar[0]], val);
+		}
+	};
+	
+	return setRec(path, create, context, value);
+};
+
 dojo.getObject	= function(name, create, context){
     // summary:
     //                Get a property from a dot-separated string, such as "A.B.C"

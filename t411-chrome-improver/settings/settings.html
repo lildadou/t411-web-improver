@@ -4,6 +4,12 @@
 		<script type="text/javascript" charset="utf8" src="../common.js"></script>
 		<script type="text/javascript" charset="utf8" src="./settings.js"></script>
 		<title>Page de configuration de T411-Improver</title>
+		<style type="text/css">
+		.indisponible {
+			text-decoration: line-through;
+			color: grey;
+		}
+		</style>
 	</head>
 	<body>
 		<nav>
@@ -11,7 +17,7 @@
 				<li>Force HTTPS</li>
 				<li>Fast Download</li>
 				<li>Mass Signal</li>
-				<li>WYSIWYG</li>
+				<li>Forum</li>
 				<li>Peers Stats</li>
 				<li>Auto Prez</li>
 				<li>Comment Notifier</li>
@@ -34,19 +40,27 @@
 			</article>
 			<article>
 				<h2>Mass Signal</h2>
-				<p>Quantité de torrents sur T411 ne respectent pas les règles d'uploads. Cette fonctionnalité permet signaler rapidement des torrents présentant le même défaut.</p> 
+				<p>Quantité de torrents sur T411 ne respectent pas les règles d'uploads. Lorsque cette fonctionnalité est activée, une boite de dialogue sera affichée en bas de vos résultat de recherche.</p> 
 				<div><ul>
+					<li><input type="checkbox" id="masssignal.use" /><span>Activer la fonction de signalement massif</span></li>
+					<li><span>Message à l'Uploader via commentaire par défaut: </span><input type="text" id="masssignal.msgUploaderPub" /></li>
 					<li><input type="checkbox" id="masssignal.optUploaderPub" /><span>Pré-cocher la notification de l'uploader via les Commentaires</span></li>
-					<li><input type="checkbox" id="masssignal.optUploaderPriv" /><span>Pré-cocher la notification de l'uploader via les Messages privés</span></li>
+					<li class="indisponible"><span>Message à l'Uploader via message privé par défaut: </span><input type="text" id="masssignal.msgUploaderPriv" /></li>
+					<li class="indisponible"><input type="checkbox" id="masssignal.optUploaderPriv" /><span>Pré-cocher la notification de l'uploader via les Messages privés</span></li>
+					<li><span>Message à la Team Pending par défaut: </span><input type="text" id="masssignal.msgTPending" /></li>
 					<li><input type="checkbox" id="masssignal.optTPending" /><span>Pré-cocher la notification de la Team Pending</span></li>
 					<li><input type="checkbox" id="masssignal.optVoteBad" /><span>Pré-cocher le vote Mauvaise Prez</span></li>
 				</ul></div>
 			</article>
 			<article>
 				<h2>WYSIWYG</h2>
-				<p>Il existe de nombreux endroits où il possible de rédiger un message : forum, commentaire, messages privés etc. Il est possible d'ajouter du style, des images, des vidéos Youtube etc à la condition de connaitre la syntaxe BBCode. Cette fonctionnalité propose de remplacer les éditeurs par défauts par des éditeurs <abbr title="What You See Is What You Get">WYSIWYG</abbr> plus simple d'utilisation. 
+				<p>Il existe de nombreux endroits où il possible de rédiger un message : forum, commentaire, messages privés etc. Il est possible d'ajouter du style, des images, des vidéos Youtube etc à la condition de connaitre la syntaxe BBCode. T411-Improver propose de remplacer les éditeurs par défauts par des éditeurs <abbr title="What You See Is What You Get">WYSIWYG</abbr> plus simple d'utilisation. 
 				<div><ul>
-					<li><input type="checkbox" id="wysiwyg.forum"/><span>Utiliser l'éditeur <abbr title="What You See Is What You Get">WYSIWYG</abbr> sur le forum</span></li>
+					<li><input type="checkbox" id="forum.fixProfilLinks"/><span>Corriger les liens vers les profils utilisateurs</span></li>
+					<li><input type="checkbox" id="forum.wysiwyg"/><span>Utiliser l'éditeur <abbr title="What You See Is What You Get">WYSIWYG</abbr></span></li>
+					<li><input type="checkbox" id="forum.alphaAvatar"/><span>Permetre aux avatars d'utiliser la transparence</span></li>
+					<li><input type="checkbox" id="forum.linkMentions"/><span>Rendre les @personnes_mentionnées cliquable</span></li>
+					<li><input type="checkbox" id="forum.underlineHref"/><span>Souligner les liens invisibles dans les commentaires</span></li>
 				</ul></div>
 			</article>
 			<article>
@@ -54,8 +68,8 @@
 				<p>Pour préserver la bonne santé du tracker, il est demandé au Uploaders de surveiller les peers sur leurs torrents. En effet, il est possible de repérer des tricheurs en observant les quantités d'upload. Ainsi un peer qui a uploadé des centaines de Go alors que les Power Seeders seulement quelques dizaines a de grandes chances d'être un tricheur. Cette fonctionnalité enrichie les listes de peers de statistiques descriptives de base et ajoute une coloration en fonction de l'écart à la médiane.</p>
 				<div><ul>
 					<li><input type="checkbox" id="peerstats.use" /><span>Afficher les statistiques descriptives dans la liste des peers</span></li>
-					<li><span>Colorier les ratios en orange lorsqu'ils s'écartent d'au moins <input id="peerstats.orangeSigma" type="number" min="0" step="0.1" style="width:50px"/>σ de la médiane</span></li>
-					<li><span>Colorier les ratios en rouge lorsqu'ils s'écartent d'au moins <input id="peerstats.rougeSigma" type="number" min="0" step="0.1" style="width:50px"/>σ de la médiane</span></li>
+					<li class="indisponible"><span>Colorier les ratios en orange lorsqu'ils s'écartent d'au moins <input id="peerstats.orangeSigma" type="number" min="0" step="0.1" style="width:50px"/>σ de la médiane</span></li>
+					<li class="indisponible"><span>Colorier les ratios en rouge lorsqu'ils s'écartent d'au moins <input id="peerstats.rougeSigma" type="number" min="0" step="0.1" style="width:50px"/>σ de la médiane</span></li>
 				</ul></div>
 			</article>
 			<article>
@@ -63,7 +77,7 @@
 				<p>Seul l'Uploader est notifié lorsque vous commentez un torrent. Cette fonctionnalité permet de notifier par message privé les autres participants à la discussion ou ceux que vous avez mentionné dans votre commentaire. Les pseudos utilisés sur Internet prennent des formes très variées et il est coutume d'ajouter un @ à un pseudo lorsque l'on souhaite mentionner quelqu'un.</p>
 				<div><ul>
 					<li><input id="commentNotifier.signalMentionned" type="checkbox" /><span>Notifier toutes les personnes que j'ai mentionné lorsque je laisse un commentaire</span></li>
-					<li><span>Notifier les <input id="commentNotifier.signalLastAuthor" type="number" min="1" max="10" style="width:40px" /> derniers auteurs lorsque je laisse un commentaire</span></li>
+					<li class="indisponible"><span>Notifier les <input id="commentNotifier.signalLastAuthor" type="number" min="1" max="10" style="width:40px" /> derniers auteurs lorsque je laisse un commentaire</span></li>
 				</ul></div>
 			</article>
 			<article>

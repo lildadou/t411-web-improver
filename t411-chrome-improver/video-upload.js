@@ -1,5 +1,5 @@
 // Author: Daniel L. (aka lildadou)
-(function() {
+getSettings(function(settings) {
 
 // #region Déclaration de sous-fonctions
 	
@@ -231,7 +231,7 @@ var mergeDataIntoReleaseName = function(rlzData, uglyName) {
 	return extractedDatas.normalize();
 };
 
-/**
+/**Merge les données extraite d'un NFO
  * @param {RlzData} rlzData Objet de donnée à enrichir
  * @param {MediaNFO} nfoJson NFO parsé
  * @returns {RlzData}
@@ -372,7 +372,6 @@ var applyOnUploadPage = function(rlzData) {
 	  'template':template,
 	  context	: rlzData
   }, "*");
-  
   // #endregion
   
   getOptByText(document.getElementsByName("term[34][]")[0], "Platine").selected = true;
@@ -382,6 +381,22 @@ var applyOnUploadPage = function(rlzData) {
 // FIN des déclarations statiques
 
 
+
+
+var loadTemplateUtils = function() {
+	var descInput = document.getElementById("descr");
+	var urlTemplate = chrome.extension.getURL("default-template.txt");
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", urlTemplate, true);
+	xhr.onload = function() {
+		var sTemplate = xhr.responseText;
+		descInput.textContent = sTemplate;
+	};
+	xhr.send();
+	
+	loadContent("handlebars.js", function(){console.log('handlebars.js chargé');});
+};
+
 /* Ce bout de code va ajouter un listener à la basile INPUT
  * qui reçoit le fichier NFO. Quand le contenu de cette balise
  * est modifiée on va
@@ -390,42 +405,31 @@ var applyOnUploadPage = function(rlzData) {
  *  - en extraire les infos qui nous interresse (nfoJsonDecoder)
  *  - puis pré-remplir le formulaire d'upload (applyOnUploadPage)
  */
-var descInput = document.getElementById("descr");
-var urlTemplate = chrome.extension.getURL("default-template.txt");
-var xhr = new XMLHttpRequest();
-xhr.open("GET", urlTemplate, true);
-xhr.onload = function() {
-	var sTemplate = xhr.responseText;
-	descInput.textContent = sTemplate;
+var loadNFOReaderUtils = fonction() {
+	var nfoInput = document.getElementsByName("nfo")[0];
+	nfoInput.onchange = function(e) {
+		var nfoFile = nfoInput.files[0];
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			var rlzData = new RlzData();
+			var nfoJson = new MediaNFO(reader.result); // On parse le NFO
+			var rlzName = nfoJson.getFirstNamedSection("General")["CompleteName"]; // On extrait le nom de release (qui contient beaucoup d'infos)
+			mergeDataIntoReleaseName(rlzData, rlzName); // On extrait les données du nom
+			mergeMediaNFOData(rlzData, nfoJson); // On extrait les données du NFO
+			var xhr = mdbproxy.allocine.build(
+	    		rlzData, 
+	    		function(rlzData) {
+	    			console.log(rlzData);
+	    			applyOnUploadPage(rlzData);
+	    		},
+	    		function() { applyOnUploadPage(rlzData); });
+			xhr.send();
+	  };
+	  reader.readAsText(nfoFile);
+	};
 };
-xhr.send();
 
-
-var hbs = document.createElement("script");
-hbs.src = chrome.extension.getURL("handlebars.js");
-document.body.appendChild(hbs);
-
-
-var nfoInput = document.getElementsByName("nfo")[0];
-nfoInput.onchange = function(e) {
-	var nfoFile = nfoInput.files[0];
-	var reader = new FileReader();
-	reader.onload = function(e) {
-		var rlzData = new RlzData();
-		var nfoJson = new MediaNFO(reader.result); // On parse le NFO
-		var rlzName = nfoJson.getFirstNamedSection("General")["CompleteName"]; // On extrait le nom de release (qui contient beaucoup d'infos)
-		mergeDataIntoReleaseName(rlzData, rlzName); // On extrait les données du nom
-		mergeMediaNFOData(rlzData, nfoJson); // On extrait les données du NFO
-		var xhr = mdbproxy.allocine.build(
-    		rlzData, 
-    		function(rlzData) {
-    			console.log(rlzData);
-    			applyOnUploadPage(rlzData);
-    		},
-    		function() { applyOnUploadPage(rlzData); });
-		xhr.send();
-  };
-  reader.readAsText(nfoFile);
-};
+if (settings.autoprez.video.buildPrez) loadTemplateUtils();
+if (settings.autoprez.video.detectCat) loadNFOReaderUtils();
 
 })();

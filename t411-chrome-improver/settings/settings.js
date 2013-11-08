@@ -1,14 +1,24 @@
 var defaultSettings = {
-	version		: 1,
+	version		: 3,
 	forcehttps	: { interne	: true },
 	fastdownload: { shortcut: true },
 	masssignal	: {
+		use				: false,
+		msgUploaderPub	: 'Votre prez est incorrecte',
 		optUploaderPub	: true,		// Notifier publiquement
+		msgUploaderPriv	: 'Votre prez est incorrecte',
 		optUploaderPriv	: false,	// ou via MP
+		msgTPending		: 'Cette prez n\'est pas conforme',
 		optTPending		: true,		// Notifier la TP
-		optVoteBad		: true		// Voter mauvaise prez
+		optVoteBad		: false		// Voter mauvaise prez
 	},
-	wysiwyg		: { forum	: true },
+	forum		: {
+		fixProfilLinks	: true,
+		wysiwyg			: true,
+		alphaAvatar		: true,
+		linkMentions	: true,
+		underlineHref	: true
+	},
 	peerstats	: {
 		use				: true,
 		orangeSigma		: 1,
@@ -66,4 +76,6 @@ function getSettings(callback) {
 	getStorage().get(getModuleNames(), callback);
 }
 
-initializeSettings(false);
+function saveSettings(settings, callback) {
+	getStorage().set(settings, (callback)?callback:function() {console.log('settings saved');});
+}

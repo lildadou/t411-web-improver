@@ -11,7 +11,7 @@
 	"options_page": "settings/settings.html",
 
 	"background": {
-    	"scripts"	: ["background.js", "settings/settings.js"]
+    	"scripts"	: ["background.js"]
     },
 
 	"content_scripts": [ 
@@ -20,6 +20,7 @@
 				"http://www.t411.me/torrents/upload-step-2/?category=433*",
 				"https://www.t411.me/torrents/upload-step-2/?category=433*"], 
 			"js": [
+				"settings/settings.js", 
 				"mediainfo.js",
 				"video-upload.js",
 				"mdbproxy.js"] 
@@ -28,30 +29,31 @@
 				"http://www.t411.me/torrents/upload-step-2/?category=631*",
 				"https://www.t411.me/torrents/upload-step-2/?category=631*"], 
 			"js": [
+				"settings/settings.js", 
 				"mediainfo.js",
 				"mdbproxy.js",
 				"video-upload.js"]
        }, { 
 			"matches": [
 				"http://www.t411.me/torrents/*", "https://www.t411.me/torrents/*"], 
-			"js": ["common.js", "torrentPage-injector.js"]
+			"js": ["settings/settings.js", "common.js", "torrentPage-injector.js"]
        }, { 
 			"matches": [
 				"http://forum.t411.me/*",
 				"https://forum.t411.me/*"], 
 			"all_frames": true, 
-			"js": ["common.js", "forum.js"] 
+			"js": ["settings/settings.js", "common.js", "forum.js"] 
        }, { 
 			"matches": [
 				"https://*.t411.me/*"], 
-			"js": ["force-https.js"] 
+			"js": ["settings/settings.js", "force-https.js"] 
        }, { 
 			"matches": [
 				"http://www.t411.me/torrents/search/*",
 				"https://www.t411.me/torrents/search/*",
 				"http://www.t411.me/top/today/",
 				"https://www.t411.me/top/today/"],
-			"js": ["fast-dl.js"] 
+			"js": ["settings/settings.js", "fast-dl.js", "mass-signal.js"] 
        }],
 
 	"permissions": [

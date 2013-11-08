@@ -1,4 +1,6 @@
-(function() {
+getSettings(function(settings) {
+	if ( ! settings.masssignal.use) { console.log('Mass-signal est désactivé'); return; }
+	
 var ajax = function(url, params, onDone, onFail) {
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -67,13 +69,13 @@ var form = document.querySelector("table.results").parentElement;
 var divSignal = document.createElement("div");
 var signalMessageCheck = document.createElement("input");
 signalMessageCheck.type = "checkbox";
-signalMessageCheck.checked = true;
+signalMessageCheck.checked = settings.masssignal.optTPending;
 var label = document.createElement("label");
 label.textContent = "Message aux modérateurs: ";
 var signalMessageArea = document.createElement("input");
 signalMessageArea.type="text";
 signalMessageArea.style.width="50%";
-signalMessageArea.value="Mauvaise catégorie.\nClassé HDRip au lieu de TVrip HD (HDTV).";
+signalMessageArea.value=settings.masssignal.msgTPending;
 divSignal.appendChild(signalMessageCheck);
 divSignal.appendChild(label);
 divSignal.appendChild(signalMessageArea);
@@ -83,13 +85,13 @@ form.appendChild(divSignal);
 var divMsg = document.createElement("div");
 var commentMessageCheck = document.createElement("input");
 commentMessageCheck.type = "checkbox";
-commentMessageCheck.checked = true;
+commentMessageCheck.checked = settings.masssignal.optUploaderPub;
 var label = document.createElement("label");
 label.textContent = "Message aux uploaders: ";
 var commentMessageArea = document.createElement("input");
 commentMessageArea.type="text";
 commentMessageArea.style.width="50%";
-commentMessageArea.value="Votre titre contient HDTV mais votre post n'est pas classé dans cette catégorie (ni dans TVrip). Pour ces raisons je préviens la modération et je vote mauvaise prez.";
+commentMessageArea.value=settings.masssignal.msgUploaderPub;
 divMsg.appendChild(commentMessageCheck);
 divMsg.appendChild(label);
 divMsg.appendChild(commentMessageArea);
@@ -99,6 +101,7 @@ form.appendChild(divMsg);
 var divMsg = document.createElement("div");
 var voteCheck = document.createElement("input");
 voteCheck.type = "checkbox";
+voteCheck.checked = settings.masssignal.optVoteBad;
 var label = document.createElement("label");
 label.textContent = "Voter Mauvaise Prez";
 divMsg.appendChild(voteCheck);
