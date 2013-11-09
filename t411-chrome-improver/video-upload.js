@@ -394,7 +394,7 @@ var loadTemplateUtils = function() {
 	};
 	xhr.send();
 	
-	loadContent("handlebars.js", function(){console.log('handlebars.js chargé');});
+	injectScript("handlebars.js", function(){console.log('handlebars.js chargé');});
 };
 
 /* Ce bout de code va ajouter un listener à la basile INPUT
@@ -405,7 +405,7 @@ var loadTemplateUtils = function() {
  *  - en extraire les infos qui nous interresse (nfoJsonDecoder)
  *  - puis pré-remplir le formulaire d'upload (applyOnUploadPage)
  */
-var loadNFOReaderUtils = fonction() {
+var loadNFOReaderUtils = function() {
 	var nfoInput = document.getElementsByName("nfo")[0];
 	nfoInput.onchange = function(e) {
 		var nfoFile = nfoInput.files[0];
