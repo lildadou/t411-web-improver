@@ -19,7 +19,10 @@
 			"matches": [
 				"http://www.t411.me/*",
 				"https://www.t411.me/*"], 
-			"js": ["common.js", "QuotaDL.js"] 
+			"js": [
+				"settings/settings.js",
+				"common.js",
+				"QuotaDL.js"] 
 		}, { 
 			"matches": [
 				"http://www.t411.me/torrents/upload-step-2/?category=433*",

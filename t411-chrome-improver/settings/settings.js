@@ -1,5 +1,5 @@
 var defaultSettings = {
-	version		: 3,
+	version		: 4,
 	forcehttps	: { interne	: true },
 	fastdownload: { shortcut: true },
 	masssignal	: {
@@ -33,6 +33,10 @@ var defaultSettings = {
 			detectCat	: true,
 			buildPrez	: true
 		}
+	},
+	ratioBar	: {
+		dispQuota		: true,
+		targetRatio		: 0.75
 	}
 };
 
