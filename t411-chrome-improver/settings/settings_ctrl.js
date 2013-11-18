@@ -12,6 +12,7 @@ function initializeView(settings) {
 		
 		switch (input.type) {
 		case 'checkbox':	input.checked	= dataValue; break;
+		case 'text':
 		case 'number':		input.value		= dataValue; break;
 		default: console.warn('settings_ctrl.initializeView: Le type de l\'input %s n\'est pas pris en charge.', input.id);
 		}
