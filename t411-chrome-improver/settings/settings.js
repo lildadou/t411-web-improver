@@ -56,13 +56,34 @@ function initializeSettings(reset) {
 		});
 	};
 	
+	var update = function(old) {
+		var merged = basicMerge(old, defaultSettings);
+		merged.version = defaultSettings.version;
+		getStorage().set(merged, function() {
+			console.log('Configuration mergée par le modèle n°'+defaultSettings.version);
+		});
+	};
+	
 	if (reset) erase();
 	else {
 		getStorage().get(['version'], function(e) {
 			if ((typeof(e.version)=="undefined") 
-					|| (e.version < defaultSettings.version)) erase();
+					|| (e.version < defaultSettings.version)) update();
 		});
 	}
+}
+
+function basicMerge(oldSettings, defaultSettings, result) {
+	var _result = (result)?result:{};
+	var _oldSettings = (oldSettings)?oldSettings:{};
+	
+	for (var aParam in defaultSettings) {
+		_result[aParam] = (typeof defaultSettings[aParam] === 'object')?
+				basicMerge(_oldSettings[aParam], defaultSettings[aParam]):
+				(typeof _oldSettings[aParam] === 'undefined')?defaultSettings[aParam]:_oldSettings[aParam];
+	}
+	
+	return _result;
 }
 
 /**Retourne la liste des noms de modules utilisé pour
