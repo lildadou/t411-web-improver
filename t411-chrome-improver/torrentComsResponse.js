@@ -45,9 +45,11 @@ $('#comment-form').submit(function(){
 	
 	var torrentTitle = document.querySelector("div.torrentDetails>h2>span")
 						.firstChild.textContent.trim();
-	var messageBody	= 'Un utilisateur vous a mentionné sur le torrent "'+torrentTitle
-	+'", voici son message:\n[quote]'+comment+'[/quote]\n';
-	
+	var messageBody	= 'Un utilisateur vous a mentionné sur le torrent ' +
+        '[i][u][url='+document.querySelector("a.shortlink").href+'#comment-form]'+torrentTitle+'[/url][u][/i].\n' +
+        'Pour lui répondre, merci de vous rendre sur [u][url='+document.querySelector("a.shortlink").href+'#comment-form]la page de commentaires[/url][u].\n\n' +
+        'Voici son message:\n[quote]'+comment+'[/quote]\n';
+	console.log(messageBody);
 	var noticeBody = "";
 	for (var i=0; i<userTags.length; i++) {
 		var username = userTags[i].slice(1); //On enleve le @
