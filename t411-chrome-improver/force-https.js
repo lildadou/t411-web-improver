@@ -1,7 +1,7 @@
 getSettings(function(settings) {
 	if ( ! settings.forcehttps.interne) return;
 
-	var httpsableDomains = new RegExp("http://((www|wiki|forum).)?t411.me/");
+	var httpsableDomains = new RegExp("http://((www|wiki|forum).)?t411.(me|io)?/");
 	var unsecuredTarget = document.querySelectorAll('a[href^="http://"]');
 	var qtCorrectedUrls=0;
 	for (var i=0; i< unsecuredTarget.length; i++) {
