@@ -1,9 +1,9 @@
 {
 	"manifest_version": 2,
 	"name": "T411-Improver",
-	"version": "14.1.5",
+	"version": "16.03.02",
 	
-	"description": "Extension pour t411.io qui améliore certains aspects du site.",
+	"description": "Extension pour t411.ch qui améliore certains aspects du site.",
 	"icons": { 
 		"16": "logo16.png",
 		"48": "logo48.png",
@@ -17,16 +17,16 @@
 	"content_scripts": [ 
 		{
 			"matches": [
-				"http://www.t411.io/*",
-				"https://www.t411.io/*"], 
+				"http://www.t411.ch/*",
+				"https://www.t411.ch/*"], 
 			"js": [
 				"settings/settings.js",
 				"common.js",
 				"QuotaDL.js"] 
 		}, { 
 			"matches": [
-				"http://www.t411.io/torrents/upload-step-2/?category=433*",
-				"https://www.t411.io/torrents/upload-step-2/?category=433*"], 
+				"http://www.t411.ch/torrents/upload-step-2/?category=433*",
+				"https://www.t411.ch/torrents/upload-step-2/?category=433*"], 
 			"js": [
 				"settings/settings.js", 
 				"mediainfo.js",
@@ -34,8 +34,8 @@
 				"mdbproxy.js"] 
 		}, { 
 			"matches": [
-				"http://www.t411.io/torrents/upload-step-2/?category=631*",
-				"https://www.t411.io/torrents/upload-step-2/?category=631*"], 
+				"http://www.t411.ch/torrents/upload-step-2/?category=631*",
+				"https://www.t411.ch/torrents/upload-step-2/?category=631*"], 
 			"js": [
 				"settings/settings.js", 
 				"mediainfo.js",
@@ -43,24 +43,24 @@
 				"video-upload.js"]
        }, { 
 			"matches": [
-				"http://www.t411.io/torrents/*", "https://www.t411.io/torrents/*"], 
+				"http://www.t411.ch/torrents/*", "https://www.t411.ch/torrents/*"], 
 			"js": ["settings/settings.js", "common.js", "torrentPage-injector.js"]
        }, { 
 			"matches": [
-				"http://forum.t411.io/*",
-				"https://forum.t411.io/*"], 
+				"http://forum.t411.ch/*",
+				"https://forum.t411.ch/*"], 
 			"all_frames": true, 
 			"js": ["settings/settings.js", "common.js", "forum.js"] 
        }, { 
 			"matches": [
-				"https://*.t411.io/*"], 
+				"https://*.t411.ch/*"], 
 			"js": ["settings/settings.js", "force-https.js"] 
        }, { 
 			"matches": [
-				"http://www.t411.io/torrents/search/*",
-				"https://www.t411.io/torrents/search/*",
-				"http://www.t411.io/top/today/",
-				"https://www.t411.io/top/today/"],
+				"http://www.t411.ch/torrents/search/*",
+				"https://www.t411.ch/torrents/search/*",
+				"http://www.t411.ch/top/today/",
+				"https://www.t411.ch/top/today/"],
 			"js": ["settings/settings.js", "fast-dl.js", "mass-signal.js"] 
        }],
 
@@ -68,8 +68,8 @@
 		"storage",
 		"webRequest",
 		"webRequestBlocking",
-		"http://www.t411.io/torrents/upload-step-2/*",
-		"http://www.t411.io/torrents/search/",
+		"http://www.t411.ch/torrents/upload-step-2/*",
+		"http://www.t411.ch/torrents/search/",
 		"http://imdbapi.org/*",
 		"http://mymovieapi.com/*",
 		"http://api.allocine.fr/rest/v3/*"
