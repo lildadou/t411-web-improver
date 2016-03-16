@@ -23,8 +23,14 @@ var alloUserCorrector = function(details) {
 	   }
 	}
     console.log("Allocine-API request intercepted ("+details.url+") with"+((isSuccess)?"":"out")+" success.");
-     return {'requestHeaders': details.requestHeaders};
+    return {'requestHeaders': details.requestHeaders};
 };
+
+var searchCorrector = function(details) {
+    var user_request = details.url;
+    var isEscaped = user_request.substr(-1) == "*";
+    if ( ! isEscaped) return { 'redirectUrl': details.url + "*" };
+}
 
 /* On demande à Chrome de nous prévenir et de retenir 
  * toutes requête à destination de AlloCiné juste 
@@ -34,3 +40,8 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 	alloUserCorrector,
 	{urls: [url_api+'*']},
 	["blocking", "requestHeaders"]);
+
+chrome.webRequest.onBeforeRequest.addListener(
+    searchCorrector,
+    {urls: ["*://www.t411.ch/torrents/search/*"]},
+    ["blocking"]);
