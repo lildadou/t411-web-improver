@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "T411-Improver",
-	"version": "16.3.16",
+	"version": "16.3.21",
 	
 	"description": "Extension pour t411.ch qui améliore certains aspects du site.",
 	"icons": { 

@@ -26,10 +26,33 @@ var alloUserCorrector = function(details) {
     return {'requestHeaders': details.requestHeaders};
 };
 
+var searchCorrector_build = function(params, key) {
+    var param_value = null;
+    if (params.has(key)) param_value = params.get(key);
+    else return;
+
+    var terms = param_value.split(' ');
+    console.log('value(',key,'): ', param_value);
+    console.log('split(',key,'): ', terms);
+    var result = terms[0];
+
+    for (var i=1; i<terms.length; i++) {
+        var a_term = terms[i].trim();
+        if (a_term.length <= 0) continue;
+
+        result += ' '+a_term+( (a_term.startsWith('@') || a_term.endsWith('*'))?'':'*');
+    }
+    params.set(key, result);
+    console.log('result(',key, "): ", result);
+}
+
 var searchCorrector = function(details) {
-    var user_request = details.url;
-    var isEscaped = user_request.substr(-1) == "*";
-    if ( ! isEscaped) return { 'redirectUrl': details.url + "*" };
+    var url = new URL(details.url);
+    var params = new URLSearchParams(url.search.slice(1));
+    searchCorrector_build(params, "search");
+    url.search = params;
+
+    return { 'redirectUrl': url.toString() };
 }
 
 /* On demande à Chrome de nous prévenir et de retenir 
