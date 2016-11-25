@@ -66,5 +66,5 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
 chrome.webRequest.onBeforeRequest.addListener(
     searchCorrector,
-    {urls: ["*://www.t411.ch/torrents/search/*"]},
+    {urls: ["*://www.t411.li/torrents/search/*"]},
     ["blocking"]);
