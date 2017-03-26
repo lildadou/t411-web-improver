@@ -2,8 +2,8 @@ getSettings(function(settings) {
 	// Icone de raccourci vers le profil utilisateur
 	var icoT411ProfileUrl = chrome.extension.getURL("Contact-32.png");
 	var pseudoTaker = /\/([^\/]+)$/;
-	var buildForumProfileUrl = function(pseudo) { return "http://forum.t411.ch/profile/"+pseudo; };
-	var buildT411ProfileUrl = function(pseudo) { return "http://www.t411.ch/users/profile/"+pseudo; };
+	var buildForumProfileUrl = function(pseudo) { return "http://forum.t411.ai/profile/"+pseudo; };
+	var buildT411ProfileUrl = function(pseudo) { return "http://www.t411.ai/users/profile/"+pseudo; };
 	
 	
 	/** On recupere les balises de "meta-information" de tout les commentaires 
@@ -16,7 +16,7 @@ getSettings(function(settings) {
 			var divMeta = metas[i];
 	
 			// #region Traitement des liens de profils dans les pages 'Catégories de discussions'
-			var footResum = divMeta.querySelector('span.LastDiscussionTitle > a[href^="//www.t411.ch/users/profile/"]');
+			var footResum = divMeta.querySelector('span.LastDiscussionTitle > a[href^="//www.t411.ai/users/profile/"]');
 			if (footResum != null) {
 				var pseudo = pseudoTaker.exec(footResum.href)[1];
 				footResum.href=buildForumProfileUrl(pseudo);
@@ -42,7 +42,7 @@ getSettings(function(settings) {
 			// et on corrige celui de l'avatar qui ne fonctionne pas...
 			var authorSection = divMeta.querySelector('span.Author');
 			if (authorSection != null) {
-				var pseudoLink = authorSection.querySelector('a[href^="//www.t411.ch/users/profile/"]');
+				var pseudoLink = authorSection.querySelector('a[href^="//www.t411.ai/users/profile/"]');
 				var avatarLink = authorSection.querySelector('a.ProfileLink');
 				var pseudo = pseudoTaker.exec(pseudoLink.href)[1];
 				pseudoLink.href = buildForumProfileUrl(pseudo);
